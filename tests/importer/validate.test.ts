@@ -56,6 +56,11 @@ describe("toImportError", () => {
     expect(toImportError(new SaveError("INVALID_MANIFEST", "m")).code).toBe("TRUNCATED");
     expect(toImportError(new SaveError("CORRUPT_COMPRESSION", "c")).code).toBe("TRUNCATED");
   });
+  it("maps SAVE_CHANGED to its own code and unreadable-but-FM24 saves to UNSUPPORTED_SAVE", () => {
+    expect(toImportError(new SaveError("SAVE_CHANGED", "c")).code).toBe("SAVE_CHANGED");
+    for (const c of ["UNSUPPORTED_COMPRESSION", "UNSUPPORTED_DATE", "UNSUPPORTED_NAMES", "NO_PLAYERS", "AMBIGUOUS_IDENTITIES"])
+      expect(toImportError(new SaveError(c, "x")).code).toBe("UNSUPPORTED_SAVE");
+  });
   it("maps allocation failures to OUT_OF_MEMORY and anything else to INTERNAL keeping the message", () => {
     expect(toImportError(new RangeError("Array buffer allocation failed")).code).toBe("OUT_OF_MEMORY");
     const e = toImportError(new Error("boom"));
@@ -84,29 +89,50 @@ describe("writeSnapshotAtomically", () => {
   });
 });
 
+function synthetic(withReserves = false) {
+  const db = Buffer.alloc(2000);
+  db.writeUInt32LE(10, 300); // club row head: owner
+  db.writeUInt32LE(100, 318); // club uid
+  const teams = [{ offset: 300, club: null, ordinal: 49, type: 100, members: [] as number[] }];
+  if (withReserves) {
+    db.writeUInt32LE(11, 400); // owner = club id + 1
+    db.writeUInt32LE(2_000_000_001, 418);
+    teams.push({ offset: 400, club: null, ordinal: 900, type: 100, members: [] });
+  }
+  const tactics = Buffer.alloc(29);
+  tactics.writeUInt32LE(50, 19);
+  const parsed = {
+    name: "x", formatVersion: "24.4.1+0", gameDate: "2025-04-06", db,
+    clubs: [{ id: 10, uid: 100, name: "C", shortName: "C", nation: 1, offset: 0 }],
+    teams,
+    players: [{
+      id: 5, uid: 50, name: "Ann", fullName: "Ann", age: 20, birthDate: "2005-01-02", nationId: 1, otherNationIds: [],
+      clubId: 10, club: "C", team: 50, ca: 1, pa: 1, positions: [], positionRatings: Array(15).fill(1), attributes: {},
+      rawAttributes: [], source: { person: 10, ability: 100, identity: 200 },
+    }],
+    diagnostics: {}, warnings: ["Save format 24.4.1+0 differs from the supported build 24.3.0+0; offsets may have moved."],
+  } as unknown as ParsedSave;
+  return { ...buildSnapshotFrom(parsed, tactics, "x.fm") };
+}
+
 describe("buildSnapshotFrom warnings", () => {
   it("carries the parser's version warning and adds the sanity warning", () => {
-    const db = Buffer.alloc(2000);
-    db.writeUInt32LE(10, 300); // club row head: owner
-    db.writeUInt32LE(100, 318); // club uid
-    const tactics = Buffer.alloc(29);
-    tactics.writeUInt32LE(50, 19);
-    const parsed = {
-      name: "x", formatVersion: "24.4.1+0", gameDate: "2025-04-06", db,
-      clubs: [{ id: 10, uid: 100, name: "C", shortName: "C", nation: 1, offset: 0 }],
-      teams: [{ offset: 300, club: null, ordinal: 49, type: 100, members: [] }],
-      players: [{
-        id: 5, uid: 50, name: "Ann", fullName: "Ann", age: 20, birthDate: "2005-01-02", nationId: 1, otherNationIds: [],
-        clubId: 10, club: "C", team: 50, ca: 1, pa: 1, positions: [], positionRatings: Array(15).fill(1), attributes: {},
-        rawAttributes: [], source: { person: 10, ability: 100, identity: 200 },
-      }],
-      diagnostics: {}, warnings: ["Save format 24.4.1+0 differs from the supported build 24.3.0+0; offsets may have moved."],
-    } as unknown as ParsedSave;
-    const s = buildSnapshotFrom(parsed, tactics, "x.fm");
+    const s = synthetic();
     const w = s.warnings.join("\n");
     expect(w).toContain("24.4.1+0");
     expect(w).toContain("first team has 1 players");
     expect(s.squads.first.map((p) => p.uid)).toEqual([50]);
     expect(s.squads.reserves).toEqual([]);
+  });
+  it("warns about missing teams and players without a contract, with the exact lines", () => {
+    const w = synthetic().warnings;
+    expect(w).toContain("No Reservas team found for C.");
+    expect(w).toContain("No Sub-18 team found for C.");
+    expect(w).toContain("1 players without a current contract.");
+  });
+  it("warns when a Reservas team is found but holds no players", () => {
+    const w = synthetic(true).warnings;
+    expect(w).toContain("The Reservas team found for C has no players; it may be the wrong team.");
+    expect(w).not.toContain("No Reservas team found for C.");
   });
 });

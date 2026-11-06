@@ -34,6 +34,8 @@ export function sanityWarnings(s: Snapshot): string[] {
 
 const DAMAGED = new Set(["TRUNCATED", "INVALID_MANIFEST", "INVALID_SIZE", "CORRUPT_COMPRESSION", "MISSING_DATABASE", "MISSING_MEMBER"]);
 
+const UNREADABLE = new Set(["UNSUPPORTED_COMPRESSION", "UNSUPPORTED_DATE", "UNSUPPORTED_NAMES", "NO_PLAYERS", "AMBIGUOUS_IDENTITIES"]);
+
 export function toImportError(e: unknown): ImportError {
   if (e instanceof ImportError) return e;
   const err = e as { code?: unknown; message?: unknown } | null;
@@ -41,6 +43,8 @@ export function toImportError(e: unknown): ImportError {
   const message = typeof err?.message === "string" ? err.message : String(e);
   if (code === "UNSUPPORTED_VERSION") return new ImportError("UNSUPPORTED_VERSION", message);
   if (code === "UNSUPPORTED_FORMAT" || code === "ENOENT" || code === "EISDIR" || code === "EACCES") return new ImportError("NOT_A_SAVE", message);
+  if (code === "SAVE_CHANGED") return new ImportError("SAVE_CHANGED", message);
+  if (UNREADABLE.has(code)) return new ImportError("UNSUPPORTED_SAVE", message);
   if (DAMAGED.has(code)) return new ImportError("TRUNCATED", message);
   if (e instanceof RangeError && /allocation|array length|string length/i.test(message)) return new ImportError("OUT_OF_MEMORY", message);
   return new ImportError("INTERNAL", message);

@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { createReadStream, existsSync, mkdtempSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { closeSync, createReadStream, existsSync, mkdtempSync, openSync, readFileSync, readSync, statSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -36,6 +36,33 @@ describe("importer process", () => {
     const out = join(d, "snapshot.json");
     const r = runImporter(fake, out);
     expect([r.status, r.last.type, r.last.code]).toEqual([1, "error", "NOT_A_SAVE"]);
+    expect(existsSync(out)).toBe(false);
+  });
+});
+
+describe("importer process, bad output path", () => {
+  it("reports OUTPUT_FAILED at once, before reading the save", () => {
+    const d = tmp();
+    const blocker = join(d, "file.txt");
+    writeFileSync(blocker, "x");
+    const r = runImporter(join(d, "missing.fm"), join(blocker, "sub", "snapshot.json"));
+    expect([r.status, r.last.type, r.last.code]).toEqual([1, "error", "OUTPUT_FAILED"]);
+    expect(r.elapsedMs).toBeLessThan(10_000);
+  });
+});
+
+describe.skipIf(!SAVE)("importer process on a truncated copy of the sample save", () => {
+  it("reports TRUNCATED and writes no output", () => {
+    const d = tmp();
+    const cut = join(d, "cut.fm");
+    const buf = Buffer.alloc(1024 * 1024);
+    const fd = openSync(SAVE!, "r");
+    readSync(fd, buf, 0, buf.length, 0);
+    closeSync(fd);
+    writeFileSync(cut, buf);
+    const out = join(d, "snapshot.json");
+    const r = runImporter(cut, out);
+    expect([r.status, r.last.type, r.last.code]).toEqual([1, "error", "TRUNCATED"]);
     expect(existsSync(out)).toBe(false);
   });
 });

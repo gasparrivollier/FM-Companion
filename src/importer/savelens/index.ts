@@ -35,6 +35,7 @@ export type ParsedSave = {
   clubs: ReturnType<typeof readClubs>;
   teams: Team[];
   db: Buffer;
+  tactics: Buffer | null;
   diagnostics: Record<string, number>;
   warnings: string[];
 };
@@ -127,6 +128,12 @@ export function parseSave(
       throw new SaveError("NO_PLAYERS", "No supported player records were found in this save.");
     if (new Set(players.map((p) => p.id)).size !== players.length)
       throw new SaveError("AMBIGUOUS_IDENTITIES", "Player identities did not validate.");
+    let tactics: Buffer | null = null;
+    try {
+      tactics = a.member("tactics_man.dat");
+    } catch (e) {
+      if ((e as SaveError).code !== "MISSING_MEMBER") throw e;
+    }
     if (!a.unchanged())
       throw new SaveError(
         "SAVE_CHANGED",
@@ -147,6 +154,7 @@ export function parseSave(
       clubs,
       teams,
       db: b,
+      tactics,
       diagnostics: {
         people: people.length,
         identities: people.filter((p) => p.id >= 0).length,

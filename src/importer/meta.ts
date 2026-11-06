@@ -1,4 +1,6 @@
 // Save metadata: format version gate, in-game date, managed team.
+import { ImportError } from "./errors.ts";
+
 export const SUPPORTED_BUILD = "24.3.0+0";
 
 export function checkFormatVersion(v: string): { ok: boolean; warning?: string } {
@@ -18,5 +20,6 @@ export function gameDateFromDb(db: Buffer): string {
 
 /** tactics_man.dat header: manager person id u32 at 11, managed team value u32 at 19. */
 export function managedTeamFromTactics(t: Buffer): { teamValue: number; managerPersonId: number } {
+  if (t.length < 23) throw new ImportError("NO_MANAGED_CLUB", "tactics_man.dat is too short to hold the managed team.");
   return { teamValue: t.readUInt32LE(19), managerPersonId: t.readUInt32LE(11) };
 }

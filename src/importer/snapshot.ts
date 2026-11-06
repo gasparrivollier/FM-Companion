@@ -5,7 +5,6 @@ import { readContracts, type ContractRecord } from "./contracts.ts";
 import { ImportError } from "./errors.ts";
 import { managedTeamFromTactics } from "./meta.ts";
 import { homeGrownFrom, readRelations, type RelationEntry } from "./relations.ts";
-import { SaveArchive } from "./savelens/archive.ts";
 import { sanityWarnings } from "./validate.ts";
 import { parseSave, type ParsedSave, type Player } from "./savelens/index.ts";
 import { resolveManagedSquads } from "./squads.ts";
@@ -71,8 +70,11 @@ export function buildSnapshotFrom(parsed: ParsedSave, tactics: Buffer, saveFileN
   });
 
   const warnings = [...parsed.warnings];
-  if (squads.teamValues.reserves === null) warnings.push(`No Reservas team found for ${squads.club.name}.`);
-  if (squads.teamValues.u18 === null) warnings.push(`No Sub-18 team found for ${squads.club.name}.`);
+  const label: Record<"reserves" | "u18", string> = { reserves: "Reservas", u18: "Sub-18" };
+  for (const k of ["reserves", "u18"] as const) {
+    if (squads.teamValues[k] === null) warnings.push(`No ${label[k]} team found for ${squads.club.name}.`);
+    else if (out[k].length === 0) warnings.push(`The ${label[k]} team found for ${squads.club.name} has no players; it may be the wrong team.`);
+  }
   const all = [...out.first, ...out.reserves, ...out.u18];
   const noContract = all.filter((p) => p.contract === null).length;
   const noEnd = all.filter((p) => p.contract !== null && p.contract.end === null).length;
@@ -99,14 +101,6 @@ export function buildSnapshotFrom(parsed: ParsedSave, tactics: Buffer, saveFileN
 
 export function buildSnapshot(savePath: string, options: BuildOptions = {}): Snapshot {
   const parsed = parseSave(savePath, options.onProgress);
-  let tactics: Buffer;
-  const a = new SaveArchive(savePath);
-  try {
-    tactics = a.member("tactics_man.dat");
-  } catch {
-    throw new ImportError("NO_MANAGED_CLUB", "The save has no tactics_man.dat, so the managed club cannot be found.");
-  } finally {
-    a.close();
-  }
-  return buildSnapshotFrom(parsed, tactics, basename(savePath), options);
+  if (!parsed.tactics) throw new ImportError("NO_MANAGED_CLUB", "The save has no tactics_man.dat, so the managed club cannot be found.");
+  return buildSnapshotFrom(parsed, parsed.tactics, basename(savePath), options);
 }

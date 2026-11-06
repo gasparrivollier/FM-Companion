@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { ImportError } from "../../src/importer/errors.ts";
 import { SUPPORTED_BUILD, checkFormatVersion, gameDateFromDb, managedTeamFromTactics } from "../../src/importer/meta.ts";
 
 describe("checkFormatVersion", () => {
@@ -40,5 +41,8 @@ describe("managedTeamFromTactics", () => {
     t.writeUInt32LE(392082, 11);
     t.writeUInt32LE(1310, 19);
     expect(managedTeamFromTactics(t)).toEqual({ teamValue: 1310, managerPersonId: 392082 });
+  });
+  it("throws NO_MANAGED_CLUB when the header is too short", () => {
+    expect(() => managedTeamFromTactics(Buffer.alloc(10))).toThrow(ImportError);
   });
 });
