@@ -1,0 +1,16 @@
+{"source":"screenshot of Merveille Papela's career statistics (Historial tab), game date 2025-04-06, player uid 92089558",
+ "career_rows":[
+  {"season":"2024/25","team":"Aberdeen","division":"cinch Premiership","apps_total":23,"goals":4,"assists":2,"mjp":1,"avg":7.06},
+  {"season":"2023/24","team":"Mainz","division":"Bundesliga","apps_total":12,"goals":0,"assists":0,"mjp":0,"avg":6.60},
+  {"season":"2022/23","team":"Sandhausen","info":"loan","division":"2. Bundesliga","apps_total":19,"goals":2},
+  {"season":"2021/22","team":"Mainz II","division":"RL Südwest","apps_total":17,"goals":6},
+  {"season":"2021/22","team":"Mainz","division":"Bundesliga","apps_total":5,"goals":0},
+  {"season":"2020/21","team":"Mainz","division":"Bundesliga","apps_total":1,"goals":0},
+  {"season":"2020/21","team":"Mainz II","division":"RL Südwest","apps_total":33,"goals":0},
+  {"season":"2019/20","team":"Mainz","division":"Bundesliga","apps_total":0}],
+ "season_2024_25_by_competition":{
+  "Liga":{"apps":"10 (13)","goals":4,"assists":2,"mjp":1,"yellow":1,"red":0,"avg":7.06},
+  "Copa":{"apps":"0 (3)","goals":0,"assists":0,"avg":6.77},
+  "Continental":{"apps":"6 (6)","goals":0,"assists":3,"yellow":2,"avg":6.95},
+  "No oficiales":{"apps":"0 (2)","assists":1,"avg":6.95},
+  "Global (Club)":{"apps":"16 (22)","goals":4,"assists":5,"mjp":1,"yellow":3,"red":0,"fouls":27,"fouled":25,"avg":7.00}}}

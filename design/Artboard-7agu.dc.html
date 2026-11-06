@@ -1,0 +1,1399 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>FM24 Companion – Tácticas</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&amp;family=Barlow+Condensed:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#0e1311;color:#e9efeb;font:400 15px/1.35 'Barlow',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled{cursor:default}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #f2b84b;outline-offset:2px}
+::placeholder{color:#7f9288}
+.app{min-height:100vh;padding:20px;display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+.top{flex:1 1 100%;border-radius:12px;overflow:hidden;border:1px solid #2a3631}
+.tbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:16px 20px}
+.tname{margin:0;font:700 32px/1.1 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.tsub{font-size:14px}
+.tbtn{min-height:40px;padding:0 14px;border-radius:8px;border:1.5px solid currentColor;background:transparent;color:inherit;font-weight:500;display:inline-flex;align-items:center;cursor:pointer;white-space:nowrap}
+.stripe{height:8px}
+.seasons{flex:1 1 100%;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:-6px}
+.stabs{display:flex;flex-wrap:wrap;gap:6px}
+.stab{min-height:42px;padding:0 16px;border-radius:8px;border:1px solid #3a4c43;background:#1c2621;font-weight:500;display:inline-flex;align-items:baseline;gap:8px;align-items:center}
+.stab span{font-size:12px;font-variant-numeric:tabular-nums}
+.stab:hover{background:#26322c}
+.stab[aria-pressed="true"]{background:#e9efeb;color:#0e1311;border-color:#e9efeb;font-weight:600}
+.mback{position:fixed;inset:0;z-index:40;background:rgba(5,8,7,.65);border:0;padding:0;cursor:default}
+.mbox{position:fixed;z-index:41;left:50%;top:50%;transform:translate(-50%,-50%);width:min(440px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;background:#151c19;border:1px solid #3a4c43;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:18px;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.fld{display:flex;flex-direction:column;gap:8px}
+.crow2{display:flex;align-items:center;gap:12px}
+.crow2 input{width:56px;height:44px;padding:0;border:1px solid #3a4c43;border-radius:8px;background:none;cursor:pointer}
+.left{flex:1 1 480px;max-width:600px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.right{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.panel{background:#151c19;border:1px solid #2a3631;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.h{font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#9db0a6}
+.muted{color:#9db0a6}
+.small{font-size:13px}
+.btn{min-height:40px;padding:0 14px;border-radius:8px;border:1px solid #3a4c43;background:#1c2621;font-weight:500;white-space:nowrap}
+.btn:hover:not(:disabled){background:#26322c}
+.btn:disabled{opacity:.5}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--acc-ink);font-weight:600}
+.btn.pri:hover:not(:disabled){background:color-mix(in srgb,var(--acc) 82%,#fff)}
+.btn.warn{border-color:#d0646a;color:#ffb3b6}
+.drow{display:flex;align-items:center;gap:6px}
+.tierbtn{flex:1;min-width:0;min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;padding:0 12px;border-radius:8px;border:1px solid #3a4c43;background:#1c2621}
+.tierbtn b{flex:none;min-width:104px;font:600 14px/1 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9db0a6}
+.tierbtn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.tierbtn.minor{min-height:36px;opacity:.85}
+.tierbtn:hover{background:#26322c}
+.band{display:flex;flex-direction:column;gap:6px;padding:4px 6px 8px;border-radius:8px}
+.band.drop{background:#25332c;outline:1px dashed #fff;outline-offset:1px}
+.bhead{display:flex;align-items:center;gap:10px}
+.bsel{flex:none;display:flex;align-items:center;gap:10px;min-height:34px;padding:0 12px;border-radius:999px;border:1px solid #3a4c43;background:#1c2621;font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase}
+.bsel:hover{background:#26322c}
+.bsel[aria-pressed="true"]{border-color:var(--accl);box-shadow:inset 0 0 0 1px var(--accl)}
+.bcount{color:#9db0a6;font-variant-numeric:tabular-nums}
+.bline{flex:1;height:1px;background:#3a4c43}
+.item{flex:1;min-width:0;min-height:38px;display:flex;align-items:center;gap:12px;text-align:left;padding:0 12px;border-radius:8px;border:1px solid #2f3e37;background:#1c2621;cursor:grab;font-weight:500}
+.item b{flex:none;min-width:18px;color:#9db0a6;font-variant-numeric:tabular-nums}
+.item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item:hover{background:#26322c}
+.bempty{font-size:13px;color:#7f9288;padding:0 4px}
+.tierbtn.drop{border-color:#fff;background:#2e3d36}
+.tierbtn[aria-pressed="true"]{border-color:var(--accl);box-shadow:inset 0 0 0 1px var(--accl);opacity:1}
+.mini{flex:none;min-width:36px;min-height:36px;border-radius:8px;border:1px solid #3a4c43;background:#1c2621;padding:0}
+.mini:hover:not(:disabled){background:#26322c}
+.mini:disabled{opacity:.35}
+.btn.danger{background:#6e2a30;border-color:#c7585f;color:#ffdfe0;font-weight:600}
+.btn.danger:hover:not(:disabled){background:#853339}
+.inp{min-height:40px;min-width:0;flex:1 1 160px;background:#0f1512;border:1px solid #3a4c43;border-radius:8px;padding:0 12px}
+.row2{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tag{font:600 12px/1 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--acc-ink);background:var(--acc);border-radius:5px;padding:4px 7px}
+.tag.mut{background:#26322c;color:#b9c9c0}
+.dd{position:relative}
+.ddback{position:fixed;inset:0;z-index:10;background:transparent;border:0;padding:0;cursor:default}
+.ddbtn{width:100%;min-height:46px;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:0 14px;border-radius:10px;border:1px solid #3a4c43;background:#1c2621;font:600 20px/1 'Barlow Condensed',sans-serif;letter-spacing:.04em;position:relative;z-index:11}
+.ddbtn:hover{background:#26322c}
+.ddmenu{position:absolute;z-index:12;left:0;right:0;top:calc(100% + 6px);background:#1b2420;border:1px solid #3a4c43;border-radius:10px;padding:6px;max-height:360px;overflow:auto;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.ddgrp{padding:8px 10px 4px}
+.ddi{display:flex;width:100%;justify-content:space-between;align-items:center;min-height:42px;padding:0 10px;border:0;background:none;border-radius:6px;text-align:left;font-weight:500}
+.ddi:hover{background:#26322c}
+.ddi.on{color:var(--accl);font-weight:600}
+.pitch{position:relative;aspect-ratio:78/100;width:100%;border-radius:12px;overflow:hidden;border:1px solid #2a3631;background:repeating-linear-gradient(180deg,#235f40 0,#235f40 9.09%,#1f5738 9.09%,#1f5738 18.18%)}
+.lines{position:absolute;left:0;top:0;width:100%;height:100%}
+.tok{position:absolute;width:46px;height:46px;transform:translate(-50%,-50%);display:block;background:none;border:0;padding:0;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.tok:active{cursor:grabbing}
+.dw{position:relative;display:block;width:46px;height:46px}
+.disc{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;border:3px solid #fff;background:#0e1311;color:#fff;font:700 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.02em}
+.disc.long{font-size:12px;letter-spacing:0}
+.tok.empty .disc{border-style:dashed}
+.tok.sel .disc{box-shadow:0 0 0 3px var(--accl),0 0 20px 5px color-mix(in srgb,var(--accl) 50%,transparent)}
+.bdg{position:absolute;right:-7px;top:-7px;min-width:20px;height:20px;border-radius:10px;text-align:center;font:700 13px/20px 'Barlow Condensed',sans-serif}
+.adot{position:absolute;z-index:2;left:-1px;top:-1px;width:12px;height:12px;border-radius:50%;background:#e5484d;border:1.5px solid #0e1311}
+.bdg.out{background:#c7343a;color:#fff}
+.bdg.near{background:#f2b84b;color:#1a1305}
+.stats{display:flex;flex-wrap:wrap;gap:8px 22px}
+.st b{display:block;font:600 22px/1.1 'Barlow Condensed',sans-serif;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.seg{display:inline-flex;border:1px solid #3a4c43;border-radius:8px;overflow:hidden}
+.seg button{min-height:36px;padding:0 12px;border:0;background:#1c2621;font-weight:500;color:#b9c9c0}
+.seg button[aria-pressed="true"]{background:#e9efeb;color:#0e1311;font-weight:600}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr));gap:12px}
+.card{background:#1b2420;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:9px}
+.cap{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.kpi{font:700 36px/1 'Barlow Condensed',sans-serif;font-variant-numeric:tabular-nums}
+.cap b{font:600 20px/1 'Barlow Condensed',sans-serif;font-variant-numeric:tabular-nums}
+.crow{display:grid;grid-template-columns:50px 1fr 54px;align-items:center;gap:8px;font-size:13px}
+.track{height:8px;border-radius:4px;background:#2b3832;overflow:hidden;display:block}
+.bar{display:block;height:100%;border-radius:4px}
+.cval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.chip{min-height:36px;padding:0 12px;border-radius:999px;border:1px solid #3a4c43;background:#1c2621;font-weight:500}
+.chip:hover{background:#26322c}
+.chip[aria-pressed="true"]{background:#e9efeb;color:#0e1311;border-color:#e9efeb;font-weight:600}
+.tscroll{overflow:auto;max-height:420px;border:1px solid #2a3631;border-radius:10px}
+.tin{min-width:680px}
+.row{display:grid;grid-template-columns:56px minmax(130px,1.7fr) 110px 44px 84px 48px 84px;gap:8px;align-items:center;padding:0 10px;min-height:44px;border-bottom:1px solid #222d28}
+.row.head{position:sticky;top:0;z-index:2;background:#151c19;min-height:36px}
+.row.xi{background:rgba(79,209,165,.06)}
+.row:not(.head){cursor:pointer}
+.row:not(.head):hover{background:#1f2a25}
+.row:not(.head),.prow{cursor:grab;-webkit-user-select:none;user-select:none}
+.ghost{position:fixed;z-index:60;pointer-events:none;transform:translate(14px,14px);padding:8px 12px;border-radius:8px;background:var(--acc);color:var(--acc-ink);font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.5);white-space:nowrap}
+.tok.drop .disc{transform:scale(1.18);box-shadow:0 0 0 3px #fff,0 0 22px 6px color-mix(in srgb,var(--accl) 60%,transparent)}
+.row.cur{background:color-mix(in srgb,var(--accl) 14%,transparent)}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.warnx{color:#ff9a9e}
+.sortb{background:none;border:0;padding:0;color:#9db0a6;font:600 12px/1 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;text-align:left;min-height:32px}
+.sortb.r{text-align:right}
+.sortb:hover{color:#e9efeb}
+.namebtn{background:none;border:0;padding:0;text-align:left;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:40px}
+.namebtn:hover{text-decoration:underline}
+.sbadge{display:inline-grid;place-items:center;min-width:40px;height:22px;padding:0 4px;border-radius:6px;border:1.5px solid;font:700 12px/1 'Barlow Condensed',sans-serif}
+.pick{min-height:34px;padding:0 10px;border-radius:7px;border:1px solid #3a4c43;background:#1c2621;font-weight:500;font-size:13px}
+.pick:hover:not(:disabled){background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.pick:disabled{color:#9db0a6;border-color:#2a3631;background:none}
+.detail{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center}
+.dname{font:700 28px/1 'Barlow Condensed',sans-serif;letter-spacing:.03em}
+.pc{display:inline-block;margin-right:6px;padding:2px 8px;border-radius:6px;border:1.5px solid;font:700 13px/1.2 'Barlow Condensed',sans-serif}
+.pc.on{background:#e9efeb;color:#0e1311}
+.pst{min-height:46px;min-width:68px;padding:0 10px;border-radius:10px;border:1.5px solid #3a4c43;background:#1c2621;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:700 16px/1 'Barlow Condensed',sans-serif}
+.pst span{font:500 11px/1 'Barlow',sans-serif;letter-spacing:.03em;text-transform:uppercase}
+.pst.s0{color:#8da096}
+.pst.s1{border-color:#f2b84b;color:#f2b84b}
+.pst.s2{background:#e9efeb;color:#0e1311;border-color:#e9efeb}
+.pst:hover{filter:brightness(1.15)}
+.prow{display:grid;grid-template-columns:104px minmax(130px,1.5fr) 100px 40px 76px 44px 80px 96px;gap:8px;align-items:center;padding:0 10px;min-height:44px;border-bottom:1px solid #222d28}
+.prow.cur{background:color-mix(in srgb,var(--accl) 14%,transparent)}
+.fit{display:inline-block;padding:2px 8px;border-radius:6px;font:600 12px/1.3 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;border:1.5px solid}
+.fit.f0{background:#4fd1a5;border-color:#4fd1a5;color:#0e1311}
+.fit.f1{border-color:#f2b84b;color:#f2b84b}
+.fit.f2{border-color:#6f8278;color:#b2c2b9}
+.sr{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.sr:focus-visible + .tbtn{outline:2px solid currentColor;outline-offset:2px}
+@media (pointer:coarse){.btn,.chip,.pick,.seg button,.stab{min-height:44px}}
+@media (max-width:520px){.app{padding:16px}}
+</style>
+</helmet>
+
+<div class="app" style="--acc: {{c2}}; --acc-ink: {{fg2}}; --accl: {{c2l}}">
+
+  <header class="top" style="background: {{c1}}; color: {{fg1}}">
+    <div class="tbar">
+      <div>
+        <h1 class="tname">{{teamShown}}</h1>
+        <div class="tsub">FM24 Companion · Football Manager 24 · plan de plantilla</div>
+      </div>
+      <div class="row2">
+        <sc-if value="{{hasMsg}}" hint-placeholder-val="{{ false }}"><span class="small">{{importMsg}}</span></sc-if>
+        <input id="fileIn" class="sr" type="file" accept=".html,.htm,.csv,.txt,.tsv" onChange="{{onFile}}">
+        <label for="fileIn" class="tbtn" style="background: {{c2}}; color: {{fg2}}; border-color: {{c2}}">Importar archivo</label>
+        <button type="button" class="tbtn" aria-haspopup="dialog" onClick="{{openSettings}}">
+          <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" style="margin-right:8px"><path d="M2 5h12M2 11h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"></path><circle cx="10" cy="5" r="2" fill="currentColor"></circle><circle cx="6" cy="11" r="2" fill="currentColor"></circle></svg>
+          Ajustes
+        </button>
+      </div>
+    </div>
+    <div class="stripe" style="background: {{c2}}"></div>
+  </header>
+
+  <div class="seasons">
+    <div class="stabs" role="group" aria-label="Temporada del plan">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+        <button type="button" class="stab" aria-pressed="{{t.on}}" onClick="{{t.click}}">{{t.label}} <span>{{t.year}}</span></button>
+      </sc-for>
+    </div>
+    <div class="row2">
+      <sc-if value="{{showCopy}}" hint-placeholder-val="{{ false }}"><button type="button" class="btn" onClick="{{copyPlan}}">Copiar plan de la temporada actual</button></sc-if>
+      <sc-if value="{{showClear}}" hint-placeholder-val="{{ true }}"><button type="button" class="btn danger" onClick="{{askClear}}">Vaciar XI</button></sc-if>
+      <sc-if value="{{confirmClear}}" hint-placeholder-val="{{ false }}">
+        <span class="small" role="alert">¿Vaciar el XI de esta temporada?</span>
+        <button type="button" class="btn danger" onClick="{{doClear}}">Sí, vaciar</button>
+        <button type="button" class="btn" onClick="{{cancelClear}}">No</button>
+      </sc-if>
+    </div>
+  </div>
+
+  <!-- LEFT: tactic + pitch -->
+  <div class="left">
+    <section class="panel" aria-label="Táctica">
+      <div class="row2" style="justify-content:space-between">
+        <span class="h">Táctica</span>
+        <sc-if value="{{dirty}}" hint-placeholder-val="{{ false }}"><span class="tag">Cambios sin guardar</span></sc-if>
+      </div>
+
+      <div class="dd" onKeyDown="{{ddKey}}">
+        <button type="button" class="ddbtn" aria-haspopup="true" aria-expanded="{{menuOpen}}" onClick="{{toggleMenu}}">
+          <span>{{tacticName}}</span>
+          <svg viewBox="0 0 12 12" width="14" height="14" aria-hidden="true"><path d="M2 4.5 6 8.5 10 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </button>
+        <sc-if value="{{menuOpen}}" hint-placeholder-val="{{ false }}">
+          <button type="button" class="ddback" tabindex="-1" aria-label="Cerrar menú de tácticas" onClick="{{closeMenu}}"></button>
+          <div class="ddmenu">
+            <div class="ddgrp h">Formaciones</div>
+            <sc-for list="{{presetItems}}" as="t" hint-placeholder-count="8">
+              <button type="button" class="ddi {{t.cls}}" onClick="{{t.pick}}"><span>{{t.name}}</span><span class="muted small">{{t.mark}}</span></button>
+            </sc-for>
+            <sc-if value="{{hasCustom}}" hint-placeholder-val="{{ false }}">
+              <div class="ddgrp h">Mis tácticas</div>
+              <sc-for list="{{customItems}}" as="t" hint-placeholder-count="0">
+                <button type="button" class="ddi {{t.cls}}" onClick="{{t.pick}}"><span>{{t.name}}</span><span class="muted small">{{t.mark}}</span></button>
+              </sc-for>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+
+      <div class="row2">
+        <input class="inp" type="text" maxlength="32" aria-label="Nombre de la nueva táctica" placeholder="Nombrá esta táctica, ej. Presión alta 4-3-3" value="{{saveName}}" onChange="{{onName}}" onKeyDown="{{nameKey}}">
+        <button type="button" class="btn pri" onClick="{{saveNew}}">Guardar como nueva</button>
+      </div>
+      <sc-if value="{{isCustom}}" hint-placeholder-val="{{ false }}">
+        <div class="row2">
+          <button type="button" class="btn" onClick="{{updateCustom}}">Guardar cambios en “{{tacticName}}”</button>
+          <sc-if value="{{showDel}}" hint-placeholder-val="{{ true }}"><button type="button" class="btn warn" onClick="{{askDelete}}">Eliminar</button></sc-if>
+          <sc-if value="{{showConfirm}}" hint-placeholder-val="{{ false }}">
+            <button type="button" class="btn warn" onClick="{{doDelete}}">Confirmar</button>
+            <button type="button" class="btn" onClick="{{cancelDelete}}">Cancelar</button>
+          </sc-if>
+        </div>
+      </sc-if>
+    </section>
+
+    <div class="pitch" onClick="{{onPitchClick}}" onPointerMove="{{onMove}}" onPointerUp="{{onUp}}" onPointerLeave="{{onUp}}" onPointerCancel="{{onUp}}">
+      <svg class="lines" viewBox="0 0 78 100" aria-hidden="true">
+        <g fill="none" stroke="rgba(255,255,255,0.42)" stroke-width="0.35">
+          <rect x="3" y="3" width="72" height="94"></rect>
+          <line x1="3" y1="50" x2="75" y2="50"></line>
+          <circle cx="39" cy="50" r="8.5"></circle>
+          <rect x="15" y="3" width="48" height="15"></rect>
+          <rect x="26" y="3" width="26" height="5.5"></rect>
+          <path d="M33 18 A8.5 8.5 0 0 0 45 18"></path>
+          <rect x="34" y="1.4" width="10" height="1.6"></rect>
+          <rect x="15" y="82" width="48" height="15"></rect>
+          <rect x="26" y="91.5" width="26" height="5.5"></rect>
+          <path d="M33 82 A8.5 8.5 0 0 1 45 82"></path>
+          <rect x="34" y="97" width="10" height="1.6"></rect>
+        </g>
+        <g fill="rgba(255,255,255,0.5)">
+          <circle cx="39" cy="50" r="0.55"></circle>
+          <circle cx="39" cy="12" r="0.55"></circle>
+          <circle cx="39" cy="88" r="0.55"></circle>
+        </g>
+      </svg>
+      <sc-for list="{{slotsV}}" as="s" hint-placeholder-count="11">
+        <button type="button" class="tok {{s.cls}}" data-slot="{{s.i}}" style="left: {{s.x}}%; top: {{s.y}}%" aria-label="{{s.aria}}" onPointerDown="{{s.down}}" onClick="{{s.click}}" onKeyDown="{{s.key}}">
+          <span class="dw">
+            <span class="disc {{s.dcls}}" style="border-color: {{s.col}}; background: {{s.bg}}; color: {{s.fg}}">{{s.label}}</span>
+            <sc-if value="{{s.hasBadge}}" hint-placeholder-val="{{ false }}"><span class="bdg {{s.badgeCls}}" aria-hidden="true">{{s.badge}}</span></sc-if>
+            <sc-if value="{{s.alert}}" hint-placeholder-val="{{ false }}"><span class="adot" aria-hidden="true"></span></sc-if>
+          </span>
+        </button>
+      </sc-for>
+    </div>
+
+    <section class="panel" aria-label="KPIs">
+      <span class="h">KPIs</span>
+      <div class="charts">
+        <div class="card"><span class="h">Canteranos · plantel total</span><b class="kpi">–</b><span class="small muted">Por definir</span></div>
+        <div class="card"><span class="h">Canteranos · liga local</span><b class="kpi">–</b><span class="small muted">Por definir</span></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- RIGHT: charts + picker or squad -->
+  <div class="right">
+    <sc-if value="{{noSel}}" hint-placeholder-val="{{ true }}">
+    <section class="panel" aria-label="Análisis del plantel">
+      <div class="row2" style="justify-content:space-between">
+        <span class="h">Por posición</span>
+        <div class="seg" role="group" aria-label="Alcance de los gráficos">
+          <button type="button" aria-pressed="{{scopeSquad}}" onClick="{{setSquad}}">Todo el plantel</button>
+          <button type="button" aria-pressed="{{scopeXI}}" onClick="{{setXI}}">Once inicial</button>
+        </div>
+      </div>
+      <div class="charts">
+        <sc-for list="{{charts}}" as="c" hint-placeholder-count="3">
+          <div class="card">
+            <div class="cap"><span class="h">{{c.title}}</span><b>{{c.total}}</b></div>
+            <sc-for list="{{c.rows}}" as="r" hint-placeholder-count="4">
+              <div class="crow">
+                <span><i class="dot" style="background: {{r.color}}"></i>{{r.label}}</span>
+                <span class="track" aria-hidden="true"><span class="bar" style="width: {{r.w}}%; background: {{r.color}}"></span></span>
+                <span class="cval">{{r.val}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- shown only while a slot is selected -->
+    <sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}">
+      <section class="panel" aria-label="Rol y jugador para el puesto elegido">
+        <div class="row2" style="justify-content:space-between">
+          <span class="h">{{selLabel}} · {{candCount}} disponibles</span>
+          <div class="row2">
+            <button type="button" class="btn warn" disabled="{{clearOff}}" onClick="{{clearSlot}}">Vaciar posición</button>
+            <button type="button" class="btn" onClick="{{deselect}}">Ver plantel completo</button>
+          </div>
+        </div>
+        <div class="row2" role="group" aria-label="Rol del puesto">
+          <span class="h" style="min-width:34px">Rol</span>
+          <sc-for list="{{roleChips}}" as="r" hint-placeholder-count="6">
+            <button type="button" class="chip" aria-pressed="{{r.on}}" onClick="{{r.click}}">{{r.label}}</button>
+          </sc-for>
+        </div>
+        <div class="card" role="group" aria-label="Profundidad del puesto">
+          <span class="h">Profundidad · tocá una franja y elegí abajo, o arrastrá jugadores a la franja</span>
+          <sc-for list="{{bands}}" as="b" hint-placeholder-count="4">
+            <div class="band {{b.cls}}" data-band="{{b.id}}">
+              <div class="bhead">
+                <button type="button" class="bsel" aria-pressed="{{b.on}}" onClick="{{b.click}}">{{b.title}} <span class="bcount">{{b.count}}</span></button>
+                <span class="bline" aria-hidden="true"></span>
+              </div>
+              <sc-if value="{{b.empty}}" hint-placeholder-val="{{ false }}"><div class="bempty">{{b.emptyTxt}}</div></sc-if>
+              <sc-for list="{{b.items}}" as="r" hint-placeholder-count="1">
+                <div class="drow">
+                  <button type="button" class="item" onPointerDown="{{r.drag}}" onClick="{{r.view}}"><b>{{r.n}}</b><span>{{r.name}}</span></button>
+                  <sc-if value="{{r.canMove}}" hint-placeholder-val="{{ false }}">
+                    <button type="button" class="mini" aria-label="{{r.upAria}}" disabled="{{r.upOff}}" onClick="{{r.moveUp}}">▲</button>
+                    <button type="button" class="mini" aria-label="{{r.downAria}}" disabled="{{r.downOff}}" onClick="{{r.moveDown}}">▼</button>
+                  </sc-if>
+                  <button type="button" class="mini" aria-label="{{r.rmAria}}" onClick="{{r.remove}}">✕</button>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+          <sc-if value="{{hasBandMsg}}" hint-placeholder-val="{{ false }}"><div class="small warnx" role="alert">{{bandMsg}}</div></sc-if>
+        </div>
+        <div class="row2">
+          <button type="button" class="btn" onClick="{{toggleAll}}">{{allLabel}}</button>
+          <button type="button" class="btn" onClick="{{toggleU18}}">{{u18Label}}</button>
+        </div>
+        <div class="tscroll" style="max-height:340px">
+          <div class="tin" role="table" aria-label="Jugadores para el puesto elegido" style="min-width:780px">
+            <sc-for list="{{cands}}" as="c" hint-placeholder-count="6">
+              <div class="prow {{c.cls}}" role="row" onPointerDown="{{c.down}}">
+                <span role="cell"><span class="fit {{c.fitCls}}">{{c.fit}}</span></span>
+                <span role="cell" style="min-width:0"><b>{{c.name}}</b> <span class="muted small">{{c.where}}</span></span>
+                <span role="cell"><b style="color: {{c.col}}">{{c.p1}}</b> <span class="muted small">{{c.prest}}</span></span>
+                <span role="cell" class="num">{{c.age}}</span>
+                <span role="cell" class="num">{{c.wage}}</span>
+                <span role="cell" class="num">{{c.rating}}</span>
+                <span role="cell" class="num {{c.expCls}}">{{c.exp}}</span>
+                <span role="cell" class="num"><button type="button" class="pick" disabled="{{c.pickOff}}" aria-label="{{c.pickAria}}" onClick="{{c.pick}}">{{c.pickLabel}}</button></span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{noCands}}" hint-placeholder-val="{{ false }}"><div class="muted">No hay jugadores naturales ni que cubran el puesto. Mostrá todas las posiciones para elegir a alguien fuera de posición.</div></sc-if>
+      </section>
+    </sc-if>
+
+    <!-- shown only while no slot is selected -->
+    <sc-if value="{{noSel}}" hint-placeholder-val="{{ true }}">
+      <section class="panel" aria-label="Plantel">
+        <div class="row2" style="justify-content:space-between">
+          <div class="row2">
+            <span class="h">Plantel · {{squadCount}}</span>
+            <sc-if value="{{isSample}}" hint-placeholder-val="{{ false }}"><span class="tag mut">Datos de ejemplo</span></sc-if>
+          </div>
+          <input class="inp" style="flex:0 1 200px" type="search" aria-label="Buscar jugadores" placeholder="Buscar nombre o posición" value="{{q}}" onChange="{{onQ}}">
+        </div>
+
+        <div class="row2" role="group" aria-label="Filtrar por posición">
+          <sc-for list="{{filters}}" as="f" hint-placeholder-count="5">
+            <button type="button" class="chip" aria-pressed="{{f.on}}" onClick="{{f.click}}">{{f.label}}</button>
+          </sc-for>
+        </div>
+
+        <div class="row2" role="group" aria-label="Vistas del plantel">
+          <span class="h" style="min-width:34px">Vista</span>
+          <sc-for list="{{viewChips}}" as="v" hint-placeholder-count="4">
+            <button type="button" class="chip" aria-pressed="{{v.on}}" onClick="{{v.click}}">{{v.label}}</button>
+          </sc-for>
+          <sc-if value="{{viewMod}}" hint-placeholder-val="{{ false }}"><span class="tag mut">Vista modificada</span></sc-if>
+          <div class="dd" onKeyDown="{{colsKey}}">
+            <button type="button" class="btn" style="position:relative;z-index:11" aria-haspopup="true" aria-expanded="{{colsOpen}}" onClick="{{toggleCols}}">Columnas · {{colCount}} ▾</button>
+            <sc-if value="{{colsOpen}}" hint-placeholder-val="{{ false }}">
+              <button type="button" class="ddback" tabindex="-1" aria-label="Cerrar menú de columnas" onClick="{{toggleCols}}"></button>
+              <div class="ddmenu" style="left:auto;right:0;width:min(320px,calc(100vw - 48px))">
+                <div class="ddgrp h">Columnas visibles</div>
+                <sc-for list="{{colChips}}" as="c" hint-placeholder-count="8">
+                  <button type="button" class="ddi {{c.cls}}" role="menuitemcheckbox" aria-checked="{{c.on}}" onClick="{{c.click}}"><span>{{c.label}}</span><span>{{c.mark}}</span></button>
+                </sc-for>
+                <div class="ddgrp h">Guardar como vista</div>
+                <div class="row2" style="padding:0 6px 6px">
+                  <input class="inp" type="text" maxlength="28" aria-label="Nombre de la vista" placeholder="Ej. Contratos por vencer" value="{{viewName}}" onChange="{{onViewName}}">
+                  <button type="button" class="btn pri" onClick="{{saveView}}">Guardar</button>
+                  <sc-if value="{{canDelView}}" hint-placeholder-val="{{ false }}"><button type="button" class="btn warn" onClick="{{delView}}">Eliminar vista</button></sc-if>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+
+        <div class="tscroll">
+          <div class="tin" role="table" aria-label="Jugadores" style="min-width: {{minW}}px">
+            <div class="row head" role="row" style="grid-template-columns: {{gridCols}}">
+              <sc-for list="{{heads}}" as="hd" hint-placeholder-count="7">
+                <span role="columnheader" class="{{hd.cls}}"><button type="button" class="sortb {{hd.cls}}" style="width:100%" onClick="{{hd.click}}">{{hd.label}} {{hd.arrow}}</button></span>
+              </sc-for>
+            </div>
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+              <div class="{{r.cls}}" role="row" style="grid-template-columns: {{gridCols}}" onPointerDown="{{r.down}}" onClick="{{r.click}}">
+                <sc-for list="{{r.cells}}" as="c" hint-placeholder-count="7">
+                  <span role="cell" class="{{c.cls}}" style="min-width:0">
+                    <sc-if value="{{c.isSlot}}" hint-placeholder-val="{{ false }}"><span class="sbadge" style="border-color: {{c.col}}">{{c.txt}}</span></sc-if>
+                    <sc-if value="{{c.isName}}" hint-placeholder-val="{{ false }}"><button type="button" class="namebtn" style="max-width:100%" title="{{c.txt}}" onClick="{{c.view}}">{{c.txt}}</button></sc-if>
+                    <sc-if value="{{c.isPos}}" hint-placeholder-val="{{ false }}"><b style="color: {{c.col}}">{{c.txt}}</b> <span class="muted small">{{c.rest}}</span></sc-if>
+                    <sc-if value="{{c.isPlain}}" hint-placeholder-val="{{ true }}">{{c.txt}}</sc-if>
+                  </span>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{noRows}}" hint-placeholder-val="{{ false }}"><div class="muted">Ningún jugador coincide.</div></sc-if>
+      </section>
+    </sc-if>
+
+    <section class="panel" aria-label="Detalle del jugador">
+      <span class="h">Jugador</span>
+      <sc-if value="{{noDetail}}" hint-placeholder-val="{{ false }}"><div class="muted">Elegí un jugador de la lista, o hacé clic en un puesto ocupado de la cancha.</div></sc-if>
+      <sc-if value="{{hasDetail}}" hint-placeholder-val="{{ true }}">
+        <div class="detail">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span class="dname">{{d.name}}</span>
+            <span>
+              <sc-for list="{{d.chips}}" as="ch" hint-placeholder-count="2"><span class="pc {{ch.cls}}" style="border-color: {{ch.col}}">{{ch.code}}</span></sc-for>
+            </span>
+          </div>
+          <div class="st"><span class="h">Edad</span><b>{{d.age}}</b></div>
+          <div class="st"><span class="h">Sueldo / sem.</span><b>{{d.wage}}</b></div>
+          <div class="st"><span class="h">Rating</span><b>{{d.rating}}</b></div>
+          <div class="st"><span class="h">Contrato hasta</span><b class="{{d.expCls}}">{{d.exp}}</b></div>
+          <div class="st"><span class="h">Rol</span><b style="font-size:18px">{{d.role}}</b></div>
+        </div>
+        <div class="row2" role="group" aria-label="Posiciones del jugador: natural, cubre o no cubre">
+          <sc-for list="{{d.allPos}}" as="a" hint-placeholder-count="14"><button type="button" class="pst {{a.cls}}" aria-label="{{a.aria}}" onClick="{{a.click}}">{{a.code}}<span>{{a.word}}</span></button></sc-for>
+        </div>
+        <sc-if value="{{hasPosMsg}}" hint-placeholder-val="{{ false }}"><div class="small warnx">{{posMsg}}</div></sc-if>
+        <div class="row2" role="group" aria-label="Posición principal">
+          <span class="h" style="min-width:78px">Principal</span>
+          <sc-for list="{{d.primary}}" as="a" hint-placeholder-count="2"><button type="button" class="chip" aria-pressed="{{a.on}}" onClick="{{a.click}}">{{a.code}}</button></sc-for>
+        </div>
+        <div class="small muted">Tocá una posición para ir alternando: no cubre → natural → cubre → no cubre. Es tu criterio como DT, más allá de lo que diga el juego. La primera natural (“Principal”) define el grupo en gráficos y filtros.</div>
+        <div class="row2">
+          <sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}"><button type="button" class="btn pri" disabled="{{d.pickOff}}" onClick="{{d.pick}}">{{d.pickLabel}}</button></sc-if>
+          <button type="button" class="btn warn" onClick="{{d.remove}}">Quitar del plantel</button>
+        </div>
+      </sc-if>
+    </section>
+  </div>
+
+  <sc-if value="{{dragging}}" hint-placeholder-val="{{ false }}"><div class="ghost" style="left: {{gx}}px; top: {{gy}}px">{{dragName}}</div></sc-if>
+
+  <sc-if value="{{settings}}" hint-placeholder-val="{{ false }}">
+    <button type="button" class="mback" tabindex="-1" aria-label="Cerrar ajustes" onClick="{{closeSettings}}"></button>
+    <div class="mbox" role="dialog" aria-modal="true" aria-label="Ajustes" onKeyDown="{{setKey}}">
+      <div class="row2" style="justify-content:space-between">
+        <span class="h">Ajustes</span>
+        <button type="button" class="btn" onClick="{{closeSettings}}">Cerrar</button>
+      </div>
+      <div class="fld">
+        <label class="h" for="teamName">Nombre del equipo</label>
+        <input id="teamName" class="inp" style="flex:none" type="text" maxlength="28" placeholder="Mi equipo" value="{{team}}" onChange="{{onTeam}}">
+      </div>
+      <div class="fld">
+        <label class="h" for="baseYear">Año en que termina la temporada actual</label>
+        <input id="baseYear" class="inp" style="flex:none" type="number" min="2000" max="2100" value="{{baseYear}}" onChange="{{onYear}}">
+        <span class="small muted">Se usa para marcar contratos que vencen antes de cada temporada y para sumar edad en las próximas.</span>
+      </div>
+      <div class="fld">
+        <span class="h">Colores del equipo</span>
+        <div class="crow2">
+          <input id="k1" type="color" value="{{c1}}" onChange="{{onC1}}">
+          <label for="k1">Principal · cabecera <span class="muted small">{{c1}}</span></label>
+        </div>
+        <div class="crow2">
+          <input id="k2" type="color" value="{{c2}}" onChange="{{onC2}}">
+          <label for="k2">Acento · botones y selección <span class="muted small">{{c2}}</span></label>
+        </div>
+      </div>
+      <div class="row2">
+        <button type="button" class="btn" onClick="{{swapColors}}">Invertir colores</button>
+        <button type="button" class="btn" onClick="{{resetColors}}">Restablecer</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script data-props='{"currency":{"editor":"enum","options":["€","£","$"],"default":"€","section":"Money"},"$preview":{"width":1440,"height":1500}}'>
+const STORE = 'fm24companion.v3';
+const STORE_V2 = 'fm24companion.v2';
+const STORE_V1 = 'fm24companion.v1';
+
+// Posiciones como las muestra FM24 en español
+const GROUP = { POR:'POR', DFI:'DEF', DFC:'DEF', DFD:'DEF', CRI:'DEF', CRD:'DEF', MC:'CEN', MEI:'CEN', MEC:'CEN', MED:'CEN', MPI:'DEL', MPC:'DEL', MPD:'DEL', DLC:'DEL' };
+const GCOL = { POR:'#f0d264', DEF:'#5f9df2', CEN:'#4fd1a5', DEL:'#f28a5e' };
+const GLIST = ['POR','DEF','CEN','DEL'];
+const VAR = { DFC:['DFCI','DFC','DFCD'], MEC:['MECI','MEC','MECD'], MC:['MCCI','MC','MCCD'], MPC:['MPCI','MPC','MPCD'], DLC:['DLCI','DLC','DLCD'] };
+
+// migraciones de versiones anteriores
+const V2MAP = { POR:'POR', LI:'DFI', DFC:'DFC', LD:'DFD', CAI:'CRI', CAD:'CRD', MCD:'MC', MI:'MEI', MC:'MEC', MD:'MED', EI:'MPI', MP:'MPC', ED:'MPD', DC:'DLC' };
+const V1MAP = { GK:'POR', DL:'DFI', DC:'DFC', DR:'DFD', WBL:'CRI', WBR:'CRD', DM:'MC', ML:'MEI', MC:'MEC', MR:'MED', AML:'MPI', AMC:'MPC', AMR:'MPD', ST:'DLC' };
+// siglas aceptadas al importar (además de las de GROUP)
+const ALIAS = { DFCD:'DFC', DFCI:'DFC', MCCD:'MC', MCCI:'MC', MECD:'MEC', MECI:'MEC', MPCD:'MPC', MPCI:'MPC', DLCD:'DLC', DLCI:'DLC',
+  LI:'DFI', LD:'DFD', CAI:'CRI', CAD:'CRD', MCD:'MC', MI:'MEI', MD:'MED', EI:'MPI', ED:'MPD', MP:'MPC', DC:'DLC',
+  GK:'POR', DL:'DFI', DR:'DFD', WBL:'CRI', WBR:'CRD', DM:'MC', ML:'MEI', MR:'MED', AML:'MPI', AMC:'MPC', AMR:'MPD', ST:'DLC' };
+const EN = { D:{L:'DFI',C:'DFC',R:'DFD'}, WB:{L:'CRI',R:'CRD'}, M:{L:'MEI',C:'MEC',R:'MED'}, AM:{L:'MPI',C:'MPC',R:'MPD'} };
+
+// Roles por posición (nombres en español a verificar contra el juego)
+const ROLES = {
+  POR: ['Portero','Portero cierre'],
+  DFC: ['Defensa central','Defensa con salida de balón','Defensa sencillo','Defensa central abierto','Líbero'],
+  DFI: ['Lateral','Lateral ofensivo','Lateral sencillo','Lateral invertido','Lateral organizador'],
+  DFD: ['Lateral','Lateral ofensivo','Lateral sencillo','Lateral invertido','Lateral organizador'],
+  CRI: ['Carrilero','Carrilero completo','Carrilero invertido','Carrilero organizador','Lateral'],
+  CRD: ['Carrilero','Carrilero completo','Carrilero invertido','Carrilero organizador','Lateral'],
+  MC:  ['Pivote','Mediocentro defensivo','Organizador retrasado','Recuperador de balón','Regista','Medio escudo'],
+  MEC: ['Mediocentro','Box to box','Mezzala','Organizador retrasado','Organizador avanzado','Recuperador de balón','Organizador itinerante'],
+  MEI: ['Mediocampista de banda','Extremo','Extremo defensivo','Organizador de banda'],
+  MED: ['Mediocampista de banda','Extremo','Extremo defensivo','Organizador de banda'],
+  MPI: ['Extremo','Delantero interior','Buscador de espacios','Organizador avanzado','Raumdeuter','Rol libre'],
+  MPD: ['Extremo','Delantero interior','Buscador de espacios','Organizador avanzado','Raumdeuter','Rol libre'],
+  MPC: ['Mediapunta','Organizador avanzado','Trequartista','Buscador de espacios','Rol libre'],
+  DLC: ['Delantero avanzado','Delantero completo','Segundo delantero','Falso 9','Ariete','Delantero presionante','Hombre objetivo','Trequartista']
+};
+
+// Columnas del plantel y vistas predefinidas ('Jugador' siempre visible)
+const COLS = [
+  { k:'xi', label:'XI', w:'56px', mw:56 },
+  { k:'name', label:'Jugador', w:'minmax(130px,1.7fr)', mw:130 },
+  { k:'pos', label:'Natural', w:'110px', mw:110 },
+  { k:'cub', label:'Cubre', w:'150px', mw:150 },
+  { k:'age', label:'Edad', w:'44px', mw:44, r:true },
+  { k:'wage', label:'Sueldo/sem.', w:'84px', mw:84, r:true },
+  { k:'rating', label:'Rtg', w:'48px', mw:48, r:true },
+  { k:'exp', label:'Contrato', w:'84px', mw:84, r:true },
+  { k:'role', label:'Rol', w:'160px', mw:160 }
+];
+const VIEWS = [
+  { id:'basica', name:'Básica', cols:['xi','pos','age','wage','rating','exp'] },
+  { id:'tactica', name:'Táctica', cols:['xi','pos','cub','role','rating'] },
+  { id:'contratos', name:'Contratos', cols:['xi','pos','age','exp','wage'] },
+  { id:'finanzas', name:'Finanzas', cols:['pos','age','wage','exp'] }
+];
+function validCols(a) {
+  const out = Array.isArray(a) ? COLS.map(function (c) { return c.k; }).filter(function (k) { return k !== 'name' && a.indexOf(k) >= 0; }) : [];
+  return out.length ? out : VIEWS[0].cols.slice();
+}
+
+function F(id, name, pts) { return { id: id, name: name, slots: pts.map(function (p) { return { code: p[0], x: p[1], y: p[2], role: null }; }) }; }
+const BACK4 = [['POR',50,91],['DFI',14,73],['DFC',38,76],['DFC',62,76],['DFD',86,73]];
+const PRESETS = [
+  F('442','4-4-2', BACK4.concat([['MEI',14,50],['MEC',38,53],['MEC',62,53],['MED',86,50],['DLC',38,24],['DLC',62,24]])),
+  F('4231','4-2-3-1', BACK4.concat([['MC',36,60],['MC',64,60],['MPI',16,40],['MPC',50,40],['MPD',84,40],['DLC',50,19]])),
+  F('433','4-3-3', BACK4.concat([['MC',50,61],['MEC',30,48],['MEC',70,48],['MPI',17,26],['DLC',50,19],['MPD',83,26]])),
+  F('4141','4-1-4-1', BACK4.concat([['MC',50,62],['MEI',14,46],['MEC',38,48],['MEC',62,48],['MED',86,46],['DLC',50,19]])),
+  F('41212','4-1-2-1-2', BACK4.concat([['MC',50,63],['MEC',30,50],['MEC',70,50],['MPC',50,37],['DLC',38,20],['DLC',62,20]])),
+  F('352','3-5-2', [['POR',50,91],['DFC',24,76],['DFC',50,78],['DFC',76,76],['CRI',10,56],['CRD',90,56],['MC',50,62],['MEC',30,47],['MEC',70,47],['DLC',38,21],['DLC',62,21]]),
+  F('343','3-4-3', [['POR',50,91],['DFC',24,76],['DFC',50,78],['DFC',76,76],['CRI',10,54],['MEC',38,52],['MEC',62,52],['CRD',90,54],['MPI',17,26],['DLC',50,19],['MPD',83,26]]),
+  F('532','5-3-2', [['POR',50,91],['CRI',9,62],['DFC',29,77],['DFC',50,79],['DFC',71,77],['CRD',91,62],['MEC',30,47],['MC',50,57],['MEC',70,47],['DLC',38,22],['DLC',62,22]])
+];
+
+// Plantel ficticio de ejemplo: reemplazalo importando tu archivo.
+function P(id, name, pos, age, wage, rating, exp) { return { id: id, name: name, pos: pos.split(' '), age: age, wage: wage, rating: rating, exp: exp }; }
+const SAMPLE = [
+  P('g1','Mateo Villar','POR',29,42000,74,2028), P('g2','Oskar Lindqvist','POR',22,9000,62,2030),
+  P('d1','Rafael Quiroga','DFD',27,38000,72,2027), P('d2','Dario Nunes','DFI',24,31000,71,2029),
+  P('d3','Emil Hartmann','DFC',30,55000,76,2026), P('d4','Kofi Mensah','DFC',25,47000,75,2028),
+  P('d5','Luca Bernasconi','DFC',20,12000,66,2030), P('d6','Jonas Reiter','DFC MC',33,28000,70,2026),
+  P('d7','Théo Marchand','CRI DFI',26,34000,72,2028), P('d8','Santiago Ibarra','CRD DFD',31,22000,69,2027),
+  P('m1','Ivo Petrović','MC MEC',28,60000,77,2028), P('m2','Adrián Ledesma','MEC',26,52000,76,2027),
+  P('m3','Bruno Castellan','MEC MPC',23,41000,74,2029), P('m4','Viktor Aalto','MC',34,18000,68,2026),
+  P('m5','Nico Delgado','MEI MPI',25,36000,73,2028), P('m6','Yusuf Karaca','MEC MED',21,15000,67,2030),
+  P('a1','Mauro Zanetti','MPC MEC',27,70000,79,2027), P('a2','Elias Brandt','MPI MEI',24,58000,76,2029),
+  P('a3','Joaquín Roldán','MPD MED',29,49000,75,2027), P('a4','Felix Okoro','DLC',26,82000,80,2028),
+  P('a5','Matías Cordero','DLC',31,44000,74,2026), P('a6','Hugo Salazar','DLC MPC',19,11000,65,2031),
+  P('a7','Kasper Dahl','MPI MPD',22,26000,70,2029), P('a8','Tiago Vilela','MPD DLC',28,40000,73,2027)
+];
+
+function clone(slots) { return slots.map(function (s) { return Object.assign({}, s, { alt: (s.alt || []).slice() }); }); }
+// Profundidad del puesto: [titular, suplente, recambio, otros en orden...]. alt = [suplente, recambio, otros...]
+function normAlt(a) {
+  const out = a.slice();
+  for (let k = out.length - 1; k >= 5; k--) { if (!out[k]) out.splice(k, 1); }
+  while (out.length && !out[out.length - 1]) out.pop();
+  return out;
+}
+function depthOf(s) { const a = (s.alt || []).slice(); while (a.length < 5) a.push(null); return [s.pid || null].concat(a); }
+function setDepth(s, d) { s.pid = d[0] || null; s.alt = normAlt(d.slice(1)); }
+const BAND = {
+  t: { title: 'Titular', word: 'titular', max: 1 },
+  s: { title: 'Suplentes', word: 'suplente', max: 2 },
+  r: { title: 'Recambios / juveniles', word: 'recambio/juvenil', max: 3 },
+  o: { title: 'Otros', word: 'otro', max: 99 }
+};
+const BANDS = ['t', 's', 'r', 'o'];
+function bandsOf(s) { const d = depthOf(s); return { t: d[0] || null, s: d.slice(1, 3).filter(Boolean), r: d.slice(3, 6).filter(Boolean), o: d.slice(6).filter(Boolean) }; }
+function fromBands(slot, b) {
+  const pad = function (a, n) { const x = a.slice(0, n); while (x.length < n) x.push(null); return x; };
+  setDepth(slot, [b.t || null].concat(pad(b.s, 2), pad(b.r, 3), b.o));
+}
+function tierName(t) { return ['Titular', 'Suplente', 'Suplente', 'Recambio', 'Recambio', 'Recambio'][t] || ((t + 1) + 'º'); }
+// "Cubre": lista explícita si el DT la editó; si no, por defecto las posiciones del mismo grupo
+function coverOf(p) {
+  if (Array.isArray(p.cub)) return p.cub.filter(function (c) { return GROUP[c] && p.pos.indexOf(c) < 0; });
+  const gs = p.pos.map(function (c) { return GROUP[c]; });
+  return Object.keys(GROUP).filter(function (c) { return p.pos.indexOf(c) < 0 && gs.indexOf(GROUP[c]) >= 0; });
+}
+function fitOf(p, code) {
+  if (p.pos.indexOf(code) >= 0) return 'nat';
+  return coverOf(p).indexOf(code) >= 0 ? 'near' : 'out';
+}
+function inkOn(hex) {
+  const n = parseInt(String(hex).slice(1), 16);
+  const ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+  const L = 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2];
+  return (1.05 / (L + 0.05)) > ((L + 0.05) / 0.056) ? '#ffffff' : '#0e1311';
+}
+function liftOn(hex) {
+  let c = [1, 3, 5].map(function (k) { return parseInt(String(hex).slice(k, k + 2), 16); });
+  const lum = function (a) { const q = a.map(function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * q[0] + 0.7152 * q[1] + 0.0722 * q[2]; };
+  for (let k = 0; k < 14 && lum(c) < 0.22; k++) c = c.map(function (v) { return Math.round(v + (255 - v) * 0.15); });
+  return '#' + c.map(function (v) { return v.toString(16).padStart(2, '0'); }).join('');
+}
+function dec(v) { return String(v).replace('.', ','); }
+function fmtR(r) { return (!r || !isFinite(r)) ? '–' : dec(Math.round(r * 10) / 10); }
+function yearLabel(y) { return (y - 1) + '/' + String(y).slice(2); }
+function defaultBaseYear() { const d = new Date(); return d.getFullYear() + (d.getMonth() >= 6 ? 1 : 0); }
+
+// "DFCI / DFCD" cuando hay dos o más puestos con la misma posición base
+function slotLabels(slots) {
+  return slots.map(function (s, i) {
+    const v = VAR[s.code];
+    if (!v) return s.code;
+    const same = [];
+    slots.forEach(function (t, k) { if (t.code === s.code) same.push({ k: k, x: t.x }); });
+    if (same.length < 2) return s.code;
+    same.sort(function (a, b) { return a.x - b.x; });
+    const r = same.findIndex(function (o) { return o.k === i; });
+    if (r === 0) return v[0];
+    if (r === same.length - 1) return v[2];
+    return v[1];
+  });
+}
+
+function fillGaps(slots, squad) {
+  const out = clone(slots);
+  const used = {};
+  out.forEach(function (s) { if (s.pid) used[s.pid] = true; });
+  const pool = squad.slice().sort(function (a, b) { return (b.rating || 0) - (a.rating || 0); });
+  function pass(test) {
+    out.forEach(function (s) {
+      if (s.pid) return;
+      const p = pool.find(function (q) { return !used[q.id] && test(q, s); });
+      if (p) { s.pid = p.id; used[p.id] = true; }
+    });
+  }
+  pass(function (p, s) { return p.pos.indexOf(s.code) >= 0; });
+  pass(function (p, s) { return coverOf(p).indexOf(s.code) >= 0; });
+  pass(function (p, s) { return GROUP[s.code] !== 'POR' && GROUP[p.pos[0]] !== 'POR'; });
+  return out;
+}
+
+function remap(oldSlots, tpl) {
+  const pool = oldSlots.filter(function (s) { return s.pid || s.role || (s.alt && s.alt.length); }).map(function (s) { return { pid: s.pid || null, code: s.code, role: s.role || null, alt: (s.alt || []).slice() }; });
+  const slots = tpl.map(function (t) { return { code: t.code, x: t.x, y: t.y, pid: null, role: null, alt: [] }; });
+  function pass(test, withRole) {
+    slots.forEach(function (s) {
+      if (s.pid || s.role || s.alt.length) return;
+      const i = pool.findIndex(function (p) { return test(p, s); });
+      if (i >= 0) { s.pid = pool[i].pid; if (withRole) { s.role = pool[i].role; s.alt = pool[i].alt; } pool.splice(i, 1); }
+    });
+  }
+  pass(function (p, s) { return p.code === s.code; }, true);
+  pass(function (p, s) { return p.pid && GROUP[p.code] === GROUP[s.code]; }, false);
+  return slots;
+}
+
+function parsePos(str) {
+  const s = String(str || '').toUpperCase();
+  const toks = s.split(/[\s,\/;]+/).filter(Boolean);
+  const mapped = toks.map(function (t) { return GROUP[t] ? t : (ALIAS[t] || null); });
+  let out = [];
+  if (mapped.length && mapped.every(Boolean)) {
+    out = mapped;
+  } else {
+    const re = /(GK|DM|WB|AM|ST|D|M)\s*(?:\(([RLC]+)\))?/g;
+    let m;
+    while ((m = re.exec(s))) {
+      const base = m[1];
+      if (base === 'GK') { out.push('POR'); continue; }
+      if (base === 'DM') { out.push('MC'); continue; }
+      if (base === 'ST') { out.push('DLC'); continue; }
+      const sides = m[2] ? m[2].split('') : ['C'];
+      sides.forEach(function (sd) { const code = EN[base] && EN[base][sd]; if (code) out.push(code); });
+    }
+  }
+  return out.filter(function (t, k) { return out.indexOf(t) === k; });
+}
+function parseWage(str) {
+  const s = String(str || '').toLowerCase()
+    .replace(/(\d)\.(?=\d{3}(?!\d))/g, '$1')
+    .replace(/(\d),(\d{1,2})(?=\s*(m\b|mill))/, '$1.$2')
+    .replace(/,/g, '');
+  const m = s.match(/(\d+(?:\.\d+)?)\s*(mill[oó]n(?:es)?|mil\b|k\b|m\b)?/);
+  if (!m) return 0;
+  let n = parseFloat(m[1]);
+  const u = m[2] || '';
+  if (u === 'mil' || u === 'k') n *= 1e3; else if (u) n *= 1e6;
+  if (/p\/a|per year|annual|\/yr|p\/y|por año|al año|anual|\/año/.test(s)) n = n / 52;
+  return Math.round(n);
+}
+function splitLine(line, d) {
+  if (d === '\t' || d === '|') {
+    const c = line.split(d).map(function (x) { return x.trim(); });
+    if (d === '|') { if (c.length && c[0] === '') c.shift(); if (c.length && c[c.length - 1] === '') c.pop(); }
+    return c;
+  }
+  const out = []; let cur = ''; let q = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { q = !q; continue; }
+    if (ch === d && !q) { out.push(cur.trim()); cur = ''; } else { cur += ch; }
+  }
+  out.push(cur.trim());
+  return out;
+}
+function htmlToTable(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  let best = null; let bn = 0;
+  Array.prototype.forEach.call(doc.querySelectorAll('table'), function (t) { const n = t.querySelectorAll('tr').length; if (n > bn) { bn = n; best = t; } });
+  if (!best) return html;
+  return Array.prototype.map.call(best.querySelectorAll('tr'), function (tr) {
+    return Array.prototype.map.call(tr.children, function (c) { return c.textContent.replace(/\s+/g, ' ').trim(); }).join('\t');
+  }).join('\n');
+}
+function parseTable(text) {
+  const lines = String(text || '').split(/\r?\n/).filter(function (l) { return l.trim() && !/^[\s|+\-=:]+$/.test(l); });
+  if (lines.length < 2) return { err: 'Pegá una fila de encabezado y al menos un jugador.' };
+  const head = lines[0];
+  let d = '\t'; let bn = 0;
+  ['\t', '|', ';', ','].forEach(function (c) { const n = head.split(c).length - 1; if (n > bn) { bn = n; d = c; } });
+  if (bn < 2) return { err: 'No se encontraron columnas. Usá tabulaciones, comas, punto y coma o |.' };
+  const cells = splitLine(head, d).map(function (h) { return h.toLowerCase(); });
+  const find = function (re) { return cells.findIndex(function (h) { return re.test(h); }); };
+  const iName = find(/^(name|player|player name|nombre|jugador)$/), iPos = find(/^(pos|position|positions|posición|posicion|posiciones)$/), iAge = find(/^(age|edad)$/);
+  const iWage = find(/wage|salary|sueldo|salario/), iRat = find(/^(rating|rtg|ovr|overall|ca|ability|av rat|avg rat|average rating|valoración|valoracion|nota|media)$/), iExp = find(/expires|expiry|contract|until|vence|vencimiento|contrato|expira|^final$/);
+  if (iName < 0 || iPos < 0 || iAge < 0) return { err: 'Faltan columnas Nombre, Posición o Edad. Encontradas: ' + cells.join(', ') };
+  const players = []; let skipped = 0;
+  lines.slice(1, 301).forEach(function (line, k) {
+    const c = splitLine(line, d);
+    const name = (c[iName] || '').trim();
+    if (!name) return;
+    const pos = parsePos(c[iPos]);
+    const age = parseInt(c[iAge], 10);
+    if (!pos.length || !age) { skipped++; return; }
+    const r = iRat >= 0 ? parseFloat(String(c[iRat]).replace(',', '.')) : NaN;
+    const ym = iExp >= 0 ? String(c[iExp] || '').match(/\b(20\d\d)\b/) : null;
+    players.push({ id: 'i' + k + Math.random().toString(36).slice(2, 6), name: name, pos: pos, age: age, wage: iWage >= 0 ? parseWage(c[iWage]) : 0, rating: isFinite(r) ? r : 0, exp: ym ? parseInt(ym[1], 10) : null });
+  });
+  if (!players.length) return { err: 'No se encontraron jugadores válidos.' };
+  return { players: players, skipped: skipped };
+}
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const slots = fillGaps(PRESETS[0].slots.map(function (s) { return { code: s.code, x: s.x, y: s.y, pid: null, role: null }; }), SAMPLE);
+    this.state = {
+      squad: SAMPLE, isSample: true, tacticId: '442', slots: slots, custom: [],
+      season: 0, plans: [null, null, null],
+      sel: null, view: null, dirty: false, menuOpen: false, saveName: '', confirmDel: false,
+      scope: 'squad', filter: 'ALL', q: '', sortKey: 'pos', sortDir: 1,
+      importMsg: '', showAll: false, settings: false, posMsg: '', dragPid: null, gx: 0, gy: 0, dragOver: null, confirmClear: false, band: 't', bandMsg: '', dragTier: null, showU18: false,
+      cols: VIEWS[0].cols.slice(), viewId: 'basica', views: [], colsOpen: false, viewName: '',
+      team: 'Mi equipo', c1: '#0b5d3b', c2: '#f2b84b', baseYear: defaultBaseYear()
+    };
+    this._drag = null; this._justDragged = false; this._rd = null; this._rowJustDragged = false;
+    const self = this;
+    // arrastre de jugadores desde la lista hacia un puesto de la cancha
+    this._rdHit = function (e) {
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const t = el && el.closest ? el.closest('[data-slot]') : null;
+      return t ? parseInt(t.getAttribute('data-slot'), 10) : null;
+    };
+    this._rdHitTier = function (e) {
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const t = el && el.closest ? el.closest('[data-band]') : null;
+      return t ? t.getAttribute('data-band') : null;
+    };
+    this._rdMove = function (e) {
+      const d = self._rd;
+      if (!d) return;
+      if (!d.moved && Math.hypot(e.clientX - d.sx, e.clientY - d.sy) < 6) return;
+      if (!d.moved) { d.moved = true; try { document.body.style.userSelect = 'none'; } catch (x) { /* ignore */ } }
+      self.setState({ dragPid: d.pid, gx: e.clientX, gy: e.clientY, dragOver: self._rdHit(e), dragTier: self._rdHitTier(e) });
+    };
+    this._rdUp = function (e) {
+      const d = self._rd;
+      document.removeEventListener('pointermove', self._rdMove);
+      document.removeEventListener('pointerup', self._rdUp);
+      document.removeEventListener('pointercancel', self._rdUp);
+      self._rd = null;
+      try { document.body.style.userSelect = ''; } catch (x) { /* ignore */ }
+      if (!d || !d.moved) return;
+      const idx = e && e.type === 'pointerup' ? self._rdHit(e) : null;
+      self._rowJustDragged = true;
+      setTimeout(function () { self._rowJustDragged = false; }, 150);
+      const tidx = e && e.type === 'pointerup' ? self._rdHitTier(e) : null;
+      self.setState({ dragPid: null, dragOver: null, dragTier: null });
+      if (tidx != null && self.state.sel != null) self.pick(d.pid, undefined, tidx);
+      else if (idx != null) self.pick(d.pid, idx);
+    };
+  }
+
+  rowDown(pid, e) {
+    if (e.button > 0 || this._rd) return;
+    this._rd = { pid: pid, sx: e.clientX, sy: e.clientY, moved: false };
+    document.addEventListener('pointermove', this._rdMove);
+    document.addEventListener('pointerup', this._rdUp);
+    document.addEventListener('pointercancel', this._rdUp);
+  }
+
+  componentDidMount() {
+    try {
+      let raw = localStorage.getItem(STORE); let map = null;
+      if (!raw) { raw = localStorage.getItem(STORE_V2); map = V2MAP; }
+      if (!raw) { raw = localStorage.getItem(STORE_V1); map = V1MAP; }
+      if (!raw) return;
+      const d = JSON.parse(raw);
+      if (!d || !Array.isArray(d.squad) || !d.squad.length) return;
+      const mp = function (c) { return map ? (map[c] || c) : c; };
+      const squad = d.squad.filter(function (p) { return p && p.id && p.name && Array.isArray(p.pos); })
+        .map(function (p) { return Object.assign({}, p, { pos: p.pos.map(mp).filter(function (c) { return GROUP[c]; }), cub: Array.isArray(p.cub) ? p.cub.map(mp).filter(function (c) { return GROUP[c]; }) : undefined }); })
+        .filter(function (p) { return p.pos.length; });
+      if (!squad.length) return;
+      const ids = {}; squad.forEach(function (p) { ids[p.id] = true; });
+      const legacyAlt = function (a) { return d.altV === 2 ? a : [a[0] || null, null, a[1] || null, null, null].concat(a.slice(2)); };
+    const clean = function (a) {
+        const m = (Array.isArray(a) ? a : []).map(function (x) { return { code: mp(x.code), x: x.x, y: x.y, pid: ids[x.pid] ? x.pid : null, role: x.role || null, alt: normAlt(legacyAlt((Array.isArray(x.alt) ? x.alt : []).map(function (id) { return ids[id] ? id : null; }))) }; }).filter(function (x) { return GROUP[x.code]; });
+        return m.length === 11 ? m : null;
+      };
+      let plans = [null, null, null]; let season = 0;
+      if (Array.isArray(d.plans)) {
+        plans = [0, 1, 2].map(function (i) { const pl = d.plans[i]; const sl = pl ? clean(pl.slots) : null; return sl ? { tacticId: pl.tacticId || '442', slots: sl, dirty: !!pl.dirty } : null; });
+        season = (d.season >= 0 && d.season <= 2) ? d.season : 0;
+      } else {
+        const sl = clean(d.slots);
+        if (sl) plans[0] = { tacticId: d.tacticId || '442', slots: sl, dirty: false };
+      }
+      let act = plans[season];
+      if (!act) { act = plans.find(Boolean); if (!act) return; season = plans.indexOf(act); }
+      const custom = (Array.isArray(d.custom) ? d.custom : []).map(function (c) { return { id: c.id, name: c.name, slots: clean(c.slots) }; }).filter(function (c) { return c.id && c.slots; });
+      const okc = function (v, f) { return /^#[0-9a-f]{6}$/i.test(v) ? v : f; };
+      this.setState({
+        squad: squad, plans: plans, season: season, tacticId: act.tacticId, slots: clone(act.slots), dirty: !!act.dirty, custom: custom,
+        isSample: !!(d.isSample != null ? d.isSample : d.sample),
+        team: typeof d.team === 'string' ? d.team : 'Mi equipo', c1: okc(d.c1, '#0b5d3b'), c2: okc(d.c2, '#f2b84b'),
+        baseYear: (d.baseYear >= 2000 && d.baseYear <= 2100) ? d.baseYear : defaultBaseYear(),
+        views: (Array.isArray(d.views) ? d.views : []).filter(function (v) { return v && v.id && v.name; }).map(function (v) { return { id: v.id, name: String(v.name), cols: validCols(v.cols) }; }),
+        cols: validCols(d.cols), viewId: d.cols ? (typeof d.viewId === 'string' ? d.viewId : null) : 'basica'
+      });
+    } catch (e) { /* storage unavailable: run in memory */ }
+  }
+
+  plansOf(s) {
+    const pl = (s.plans || [null, null, null]).slice();
+    pl[s.season] = { tacticId: s.tacticId, slots: s.slots, dirty: s.dirty };
+    return pl;
+  }
+  save(s) {
+    try {
+      localStorage.setItem(STORE, JSON.stringify({ squad: s.squad, isSample: s.isSample, plans: this.plansOf(s), season: s.season, custom: s.custom, team: s.team, c1: s.c1, c2: s.c2, baseYear: s.baseYear, views: s.views, cols: s.cols, viewId: s.viewId, altV: 2 }));
+    } catch (e) { /* ignore */ }
+  }
+  set(patch) {
+    const next = Object.assign({}, this.state, patch);
+    this.setState(patch);
+    this.save(next);
+  }
+
+  setSeason(k) {
+    const st = this.state;
+    if (k === st.season) return;
+    const plans = this.plansOf(st);
+    let tgt = plans[k];
+    if (!tgt) { tgt = { tacticId: st.tacticId, slots: clone(st.slots), dirty: st.dirty }; plans[k] = tgt; }
+    this.set({ plans: plans, season: k, confirmClear: false, tacticId: tgt.tacticId, slots: clone(tgt.slots), dirty: !!tgt.dirty, sel: null, view: null, menuOpen: false, confirmDel: false });
+  }
+  copyPlan() {
+    const st = this.state;
+    if (st.season === 0) return;
+    const src = this.plansOf(st)[0];
+    if (!src) return;
+    this.set({ tacticId: src.tacticId, slots: clone(src.slots), dirty: !!src.dirty, sel: null });
+  }
+
+  selectSlot(i) {
+    const s = this.state.slots[i];
+    this.setState({ sel: i, view: (s && s.pid) ? s.pid : this.state.view, showAll: false, band: 't', bandMsg: '' });
+  }
+  onDown(i, e) {
+    this._drag = { i: i, sx: e.clientX, sy: e.clientY, moved: false };
+    this.selectSlot(i);
+  }
+  onMove(e) {
+    const d = this._drag;
+    if (!d) return;
+    if (!d.moved && Math.hypot(e.clientX - d.sx, e.clientY - d.sy) < 6) return;
+    d.moved = true;
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = Math.max(6, Math.min(94, (e.clientX - r.left) / r.width * 100));
+    const y = Math.max(5, Math.min(96, (e.clientY - r.top) / r.height * 100));
+    const slots = this.state.slots.map(function (s, k) { return k === d.i ? Object.assign({}, s, { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 }) : s; });
+    this.setState({ slots: slots, dirty: true });
+  }
+  onUp() {
+    const self = this;
+    if (this._drag && this._drag.moved) {
+      this.save(this.state);
+      this._justDragged = true;
+      setTimeout(function () { self._justDragged = false; }, 120);
+    }
+    this._drag = null;
+  }
+  onPitchClick() {
+    if (this._justDragged) { this._justDragged = false; return; }
+    this.setState({ sel: null });
+  }
+  onKey(i, e) {
+    const m = { ArrowLeft: [-2, 0], ArrowRight: [2, 0], ArrowUp: [0, -2], ArrowDown: [0, 2] }[e.key];
+    if (!m) return;
+    e.preventDefault();
+    const slots = this.state.slots.map(function (s, k) {
+      return k === i ? Object.assign({}, s, { x: Math.max(6, Math.min(94, s.x + m[0])), y: Math.max(5, Math.min(96, s.y + m[1])) }) : s;
+    });
+    this.set({ slots: slots, dirty: true, sel: i });
+  }
+
+  pick(pid, idx, bandArg) {
+    const st = this.state; const i = idx != null ? idx : st.sel;
+    if (i == null) return;
+    const bnd = idx != null ? 't' : (bandArg || st.band || 't');
+    const slots = clone(st.slots);
+    const b = bandsOf(slots[i]);
+    const where = b.t === pid ? 't' : (['s', 'r', 'o'].find(function (k) { return b[k].indexOf(pid) >= 0; }) || null);
+    if (where === bnd) return;
+    if (bnd !== 't' && b[bnd].length >= BAND[bnd].max) {
+      this.setState({ bandMsg: BAND[bnd].title + ': franja completa (' + BAND[bnd].max + '/' + BAND[bnd].max + '). Quitá a alguien primero.' });
+      return;
+    }
+    if (bnd === 't') {
+      const old = b.t;
+      const from = slots.findIndex(function (q, k) { return k !== i && q.pid === pid; });
+      if (from >= 0) slots[from].pid = old;
+      if (where) {
+        const ix = b[where].indexOf(pid);
+        b[where].splice(ix, 1);
+        if (old) b[where].splice(ix, 0, old);
+      }
+      b.t = pid;
+    } else {
+      if (where === 't') b.t = null;
+      else if (where) b[where] = b[where].filter(function (x) { return x !== pid; });
+      b[bnd].push(pid);
+    }
+    fromBands(slots[i], b);
+    let next = st.sel; let nextBand = st.band || 't';
+    if (idx == null && bandArg == null) {
+      if (bnd === 't') {
+        next = null; nextBand = 't';
+        for (let k = 1; k < slots.length; k++) {
+          const j = (i + k) % slots.length;
+          if (!slots[j].pid) { next = j; break; }
+        }
+      } else if (b[bnd].length >= BAND[bnd].max) {
+        nextBand = bnd === 's' ? 'r' : (bnd === 'r' ? 'o' : bnd);
+      }
+    }
+    this.set({ slots: slots, sel: next, band: nextBand, bandMsg: '', view: pid, dirty: true, showAll: false });
+  }
+  moveInBand(k, i, dir) {
+    const st = this.state; if (st.sel == null || k === 't') return;
+    const slots = clone(st.slots); const b = bandsOf(slots[st.sel]); const a = b[k]; const j = i + dir;
+    if (j < 0 || j >= a.length) return;
+    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    fromBands(slots[st.sel], b);
+    this.set({ slots: slots, dirty: true });
+  }
+  removeInBand(k, i) {
+    const st = this.state; if (st.sel == null) return;
+    const slots = clone(st.slots); const b = bandsOf(slots[st.sel]);
+    if (k === 't') b.t = null; else b[k].splice(i, 1);
+    fromBands(slots[st.sel], b);
+    this.set({ slots: slots, dirty: true, bandMsg: '' });
+  }
+  setRole(role) {
+    const st = this.state;
+    if (st.sel == null) return;
+    const slots = clone(st.slots);
+    slots[st.sel].role = slots[st.sel].role === role ? null : role;
+    this.set({ slots: slots, dirty: true });
+  }
+  clearSlot() {
+    if (this.state.sel == null) return;
+    const slots = clone(this.state.slots); slots[this.state.sel].pid = null; slots[this.state.sel].role = null; slots[this.state.sel].alt = [];
+    this.set({ slots: slots, dirty: true });
+  }
+  clearXI() {
+    this.set({ slots: this.state.slots.map(function (s) { return Object.assign({}, s, { pid: null }); }), dirty: true, confirmClear: false });
+  }
+  autoPick() {
+    const cleared = this.state.slots.map(function (s) { return Object.assign({}, s, { pid: null }); });
+    this.set({ slots: fillGaps(cleared, this.state.squad), dirty: true });
+  }
+
+  selectTactic(id) {
+    const st = this.state;
+    let slots;
+    const pre = PRESETS.find(function (t) { return t.id === id; });
+    if (pre) {
+      slots = fillGaps(remap(st.slots, pre.slots), st.squad);
+    } else {
+      const c = st.custom.find(function (t) { return t.id === id; });
+      if (!c) return;
+      const ids = {}; st.squad.forEach(function (p) { ids[p.id] = true; });
+      slots = c.slots.map(function (s) { return { code: s.code, x: s.x, y: s.y, pid: ids[s.pid] ? s.pid : null, role: s.role || null, alt: normAlt((s.alt || []).map(function (id) { return ids[id] ? id : null; })) }; });
+      if (!slots.some(function (s) { return s.pid; })) slots = fillGaps(slots, st.squad);
+    }
+    this.set({ tacticId: id, slots: slots, sel: null, dirty: false, menuOpen: false, confirmDel: false });
+  }
+  saveNew() {
+    const st = this.state;
+    const name = st.saveName.trim() || ('Táctica ' + (st.custom.length + 1));
+    const id = 'c' + Date.now().toString(36);
+    this.set({ custom: st.custom.concat([{ id: id, name: name, slots: clone(st.slots) }]), tacticId: id, saveName: '', dirty: false, confirmDel: false });
+  }
+  updateCustom() {
+    const st = this.state;
+    this.set({ custom: st.custom.map(function (c) { return c.id === st.tacticId ? Object.assign({}, c, { slots: clone(st.slots) }) : c; }), dirty: false });
+  }
+  doDelete() {
+    const st = this.state;
+    const custom = st.custom.filter(function (c) { return c.id !== st.tacticId; });
+    const slots = fillGaps(remap(st.slots, PRESETS[0].slots), st.squad);
+    this.set({ custom: custom, tacticId: '442', slots: slots, sel: null, dirty: false, confirmDel: false });
+  }
+
+  editPos(pid, fn) {
+    this.set({ squad: this.state.squad.map(function (p) { return p.id === pid ? Object.assign({}, p, { pos: fn(p.pos.slice()) }) : p; }) });
+  }
+  // alterna: no cubre → natural → cubre → no cubre
+  cyclePos(pid, c) {
+    const st = this.state;
+    const p = st.squad.find(function (q) { return q.id === pid; });
+    if (!p) return;
+    let pos = p.pos.slice(); let cub = coverOf(p);
+    if (pos.indexOf(c) >= 0) {
+      if (pos.length === 1) { this.setState({ posMsg: 'Dejá al menos una posición natural: primero marcá otra como natural.' }); return; }
+      pos = pos.filter(function (x) { return x !== c; }); cub = cub.concat([c]);
+    } else if (cub.indexOf(c) >= 0) {
+      cub = cub.filter(function (x) { return x !== c; });
+    } else {
+      pos = pos.concat([c]);
+    }
+    this.set({ posMsg: '', squad: st.squad.map(function (q) { return q.id === pid ? Object.assign({}, q, { pos: pos, cub: cub }) : q; }) });
+  }
+  setView(id) {
+    const st = this.state;
+    const v = VIEWS.concat(st.views).find(function (x) { return x.id === id; });
+    if (v) this.set({ cols: v.cols.slice(), viewId: id });
+  }
+  toggleCol(k) {
+    const st = this.state;
+    const has = st.cols.indexOf(k) >= 0;
+    if (has && st.cols.length === 1) return;
+    const cols = COLS.map(function (c) { return c.k; }).filter(function (x) { return x !== 'name' && (x === k ? !has : st.cols.indexOf(x) >= 0); });
+    this.set({ cols: cols, viewId: null });
+  }
+  saveView() {
+    const st = this.state;
+    const name = st.viewName.trim() || ('Vista ' + (st.views.length + 1));
+    const id = 'v' + Date.now().toString(36);
+    this.set({ views: st.views.concat([{ id: id, name: name, cols: st.cols.slice() }]), viewId: id, viewName: '' });
+  }
+  delView() {
+    const st = this.state;
+    this.set({ views: st.views.filter(function (v) { return v.id !== st.viewId; }), cols: VIEWS[0].cols.slice(), viewId: 'basica' });
+  }
+  removePlayer(pid) {
+    const st = this.state;
+    this.set({ squad: st.squad.filter(function (p) { return p.id !== pid; }), slots: st.slots.map(function (s) { return Object.assign({}, s, { pid: s.pid === pid ? null : s.pid, alt: normAlt((s.alt || []).map(function (x) { return x === pid ? null : x; })) }); }), view: null, dirty: true });
+  }
+
+  onFile(e) {
+    const self = this; const input = e.target; const f = input.files && input.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onerror = function () { self.setState({ importMsg: 'No se pudo leer el archivo.' }); };
+    r.onload = function () {
+      const buf = new Uint8Array(r.result);
+      let enc = 'utf-8';
+      if (buf[0] === 0xFF && buf[1] === 0xFE) enc = 'utf-16le'; else if (buf[0] === 0xFE && buf[1] === 0xFF) enc = 'utf-16be';
+      let text = new TextDecoder(enc).decode(buf);
+      if (/<table/i.test(text)) text = htmlToTable(text);
+      self.runImport(text);
+    };
+    r.readAsArrayBuffer(f);
+    input.value = '';
+  }
+  runImport(text) {
+    const st = this.state;
+    const res = parseTable(text);
+    if (res.err) { this.setState({ importMsg: res.err }); return; }
+    const squad = res.players;
+    const wipe = function (sl) { return sl.map(function (s) { return Object.assign({}, s, { pid: null, alt: [] }); }); };
+    const slots = fillGaps(wipe(st.slots), squad);
+    const custom = st.custom.map(function (c) { return Object.assign({}, c, { slots: wipe(c.slots) }); });
+    const plans = this.plansOf(st).map(function (p) { return p ? Object.assign({}, p, { slots: wipe(p.slots) }) : p; });
+    let msg = 'Se importaron ' + squad.length + ' jugadores.';
+    if (res.skipped) msg += ' ' + res.skipped + ' filas sin posición o edad legible.';
+    this.set({ squad: squad, slots: slots, custom: custom, plans: plans, isSample: false, view: null, sel: null, importMsg: msg });
+  }
+
+  renderVals() {
+    const st = this.state;
+    const self = this;
+    const cur = this.props.currency ?? '€';
+    const money = function (n) {
+      n = Math.round(n || 0);
+      if (n >= 1e6) return cur + (n / 1e6).toFixed(n >= 1e7 ? 0 : 1).replace(/\.0$/, '').replace('.', ',') + 'M';
+      if (n >= 1e3) return cur + Math.round(n / 1e3) + 'K';
+      return cur + n;
+    };
+    const season = st.season;
+    const seasonYear = st.baseYear + season;
+    const ageAt = function (p) { return p.age + season; };
+    const expOf = function (p) { return p.exp ? String(p.exp) : '–'; };
+    const expWarn = function (p) { return !!(p.exp && p.exp < seasonYear); };
+
+    const byId = {}; st.squad.forEach(function (p) { byId[p.id] = p; });
+    const slotOf = {}; st.slots.forEach(function (s, i) { if (s.pid && byId[s.pid]) slotOf[s.pid] = i; });
+    const labels = slotLabels(st.slots);
+    const sel = st.sel != null ? st.slots[st.sel] : null;
+    const selLabel = sel ? labels[st.sel] : 'Sin puesto';
+    const selP = sel && sel.pid ? byId[sel.pid] : null;
+    const fitWord = { nat: 'natural', near: 'cubre', out: 'fuera de posición' };
+
+    // cancha
+    const slotsV = st.slots.map(function (s, i) {
+      const p = s.pid ? byId[s.pid] : null;
+      const f = p ? fitOf(p, s.code) : null;
+      const bad = f === 'out'; const near = f === 'near';
+      const bb = bandsOf(s);
+      const lack = ![bb.t, bb.s[0]].every(function (id) { const q = id ? byId[id] : null; return !!q && fitOf(q, s.code) === 'nat'; });
+      return {
+        i: i, x: s.x, y: s.y, label: labels[i], dcls: labels[i].length > 3 ? 'long' : '', col: GCOL[GROUP[s.code]],
+        cls: (p ? 'filled' : 'empty') + (i === st.sel ? ' sel' : '') + (i === st.dragOver ? ' drop' : ''),
+        bg: p ? GCOL[GROUP[s.code]] : 'rgba(14,19,17,0.5)', fg: p ? '#0e1311' : '#d5e4db',
+        alert: lack, hasBadge: bad || near, badge: bad ? '!' : '~', badgeCls: bad ? 'out' : 'near',
+        aria: 'Puesto ' + labels[i] + (s.role ? ', ' + s.role : '') + ', ' + (p ? p.name + ', ' + fitWord[f] : 'vacío') + (lack ? ', alerta: faltan 2 naturales entre titular y suplente' : '') + (i === st.sel ? ', seleccionado' : ''),
+        down: function (e) { self.onDown(i, e); },
+        click: function (e) { if (e && e.stopPropagation) e.stopPropagation(); self.selectSlot(i); },
+        key: function (e) { self.onKey(i, e); }
+      };
+    });
+
+    // menú de tácticas
+    const isCustom = st.custom.some(function (c) { return c.id === st.tacticId; });
+    const pre = PRESETS.find(function (t) { return t.id === st.tacticId; });
+    const curC = st.custom.find(function (c) { return c.id === st.tacticId; });
+    const tacticName = pre ? pre.name : (curC ? curC.name : '4-4-2');
+    const presetItems = PRESETS.map(function (t) { return { name: t.name, cls: t.id === st.tacticId ? 'on' : '', mark: t.id === st.tacticId ? 'actual' : '', pick: function () { self.selectTactic(t.id); } }; });
+    const customItems = st.custom.map(function (t) { return { name: t.name, cls: t.id === st.tacticId ? 'on' : '', mark: t.id === st.tacticId ? 'actual' : 'guardada', pick: function () { self.selectTactic(t.id); } }; });
+
+    // totales del XI
+    const xi = st.slots.filter(function (s) { return s.pid && byId[s.pid]; }).map(function (s) { return byId[s.pid]; });
+    const sum = function (arr, f) { return arr.reduce(function (a, p) { return a + (f(p) || 0); }, 0); };
+
+    // gráficos
+    const items = st.scope === 'xi'
+      ? st.slots.filter(function (s) { return s.pid && byId[s.pid]; }).map(function (s) { return { g: GROUP[s.code], p: byId[s.pid] }; })
+      : st.squad.map(function (p) { return { g: GROUP[p.pos[0]], p: p }; });
+    const stat = GLIST.map(function (g) { return { g: g, n: 0, wage: 0, age: 0 }; });
+    items.forEach(function (it) { const t = stat[GLIST.indexOf(it.g)]; t.n++; t.wage += it.p.wage || 0; t.age += ageAt(it.p); });
+    const maxN = Math.max(1, Math.max.apply(null, stat.map(function (t) { return t.n; })));
+    const maxW = Math.max(1, Math.max.apply(null, stat.map(function (t) { return t.wage; })));
+    const totW = stat.reduce(function (a, t) { return a + t.wage; }, 0);
+    const totN = stat.reduce(function (a, t) { return a + t.n; }, 0);
+    const totA = stat.reduce(function (a, t) { return a + t.age; }, 0);
+    const charts = [
+      { title: 'Jugadores', total: String(totN), rows: stat.map(function (t) { return { label: t.g, color: GCOL[t.g], w: (t.n / maxN * 100).toFixed(1), val: String(t.n) }; }) },
+      { title: 'Sueldos / sem.', total: money(totW), rows: stat.map(function (t) { return { label: t.g, color: GCOL[t.g], w: (t.wage / maxW * 100).toFixed(1), val: money(t.wage) }; }) },
+      { title: 'Edad promedio', total: totN ? dec((totA / totN).toFixed(1)) : '–', rows: stat.map(function (t) { const a = t.n ? t.age / t.n : 0; return { label: t.g, color: GCOL[t.g], w: (a / 36 * 100).toFixed(1), val: t.n ? dec(a.toFixed(1)) : '–' }; }) }
+    ];
+
+    // lista de plantel
+    const roleOf = function (p) { const si = slotOf[p.id]; return si != null ? (st.slots[si].role || '') : ''; };
+    let list = st.squad.filter(function (p) { return st.filter === 'ALL' || GROUP[p.pos[0]] === st.filter; });
+    const q = st.q.trim().toLowerCase();
+    if (q) list = list.filter(function (p) { return p.name.toLowerCase().indexOf(q) >= 0 || p.pos.join(' ').toLowerCase().indexOf(q) >= 0; });
+    const key = st.sortKey; const dir = st.sortDir;
+    list = list.slice().sort(function (a, b) {
+      if (key === 'name') return dir * a.name.localeCompare(b.name);
+      if (key === 'pos') {
+        const x = GLIST.indexOf(GROUP[a.pos[0]]); const y = GLIST.indexOf(GROUP[b.pos[0]]);
+        return x !== y ? dir * (x - y) : (b.rating || 0) - (a.rating || 0);
+      }
+      if (key === 'xi') return dir * ((slotOf[a.id] == null ? 99 : slotOf[a.id]) - (slotOf[b.id] == null ? 99 : slotOf[b.id]));
+      if (key === 'cub') return dir * (coverOf(a).length - coverOf(b).length);
+      if (key === 'role') return dir * roleOf(a).localeCompare(roleOf(b));
+      return dir * ((a[key] || 0) - (b[key] || 0));
+    });
+    const defDir = { xi: 1, name: 1, pos: 1, cub: -1, age: 1, wage: -1, rating: -1, exp: 1, role: 1 };
+    const active = COLS.filter(function (c) { return c.k === 'name' || st.cols.indexOf(c.k) >= 0; });
+    const gridCols = active.map(function (c) { return c.w; }).join(' ');
+    const minW = active.reduce(function (a, c) { return a + c.mw + 8; }, 20);
+    const heads = active.map(function (c) {
+      return { label: c.label, cls: c.r ? 'r' : '', arrow: st.sortKey === c.k ? (st.sortDir === 1 ? '↑' : '↓') : '', click: function () { self.setState(st.sortKey === c.k ? { sortDir: -st.sortDir } : { sortKey: c.k, sortDir: defDir[c.k] }); } };
+    });
+    const rows = list.map(function (p) {
+      const si = slotOf[p.id];
+      const cells = active.map(function (c) {
+        const o = { isSlot: false, isName: false, isPos: false, isPlain: true, txt: '', rest: '', col: '', cls: c.r ? 'num' : '', view: function () {} };
+        if (c.k === 'xi') { o.isPlain = false; o.isSlot = si != null; o.txt = si != null ? labels[si] : ''; o.col = si != null ? GCOL[GROUP[st.slots[si].code]] : 'transparent'; }
+        else if (c.k === 'name') { o.isPlain = false; o.isName = true; o.txt = p.name; o.view = function () { self.setState({ view: p.id }); }; }
+        else if (c.k === 'pos') { o.isPlain = false; o.isPos = true; o.txt = p.pos[0]; o.rest = p.pos.slice(1).join(' '); o.col = GCOL[GROUP[p.pos[0]]]; }
+        else if (c.k === 'cub') { o.txt = coverOf(p).join(' ') || '–'; o.cls = 'small muted'; }
+        else if (c.k === 'age') { o.txt = String(ageAt(p)); }
+        else if (c.k === 'wage') { o.txt = money(p.wage); }
+        else if (c.k === 'rating') { o.txt = fmtR(p.rating); }
+        else if (c.k === 'exp') { o.txt = expOf(p) + (expWarn(p) ? ' ▲' : ''); o.cls = 'num' + (expWarn(p) ? ' warnx' : ''); }
+        else if (c.k === 'role') { o.txt = roleOf(p) || '–'; o.cls = 'small'; }
+        return o;
+      });
+      return { cls: 'row' + (si != null ? ' xi' : '') + (st.view === p.id ? ' cur' : ''), cells: cells, click: function () { if (!self._rowJustDragged) self.setState({ view: p.id }); }, down: function (e) { self.rowDown(p.id, e); } };
+    });
+    const viewChips = VIEWS.concat(st.views).map(function (v) { return { label: v.name, on: st.viewId === v.id, click: function () { self.setView(v.id); } }; });
+    const colChips = COLS.filter(function (c) { return c.k !== 'name'; }).map(function (c) { const on = st.cols.indexOf(c.k) >= 0; return { label: c.label, on: on, cls: on ? 'on' : '', mark: on ? '✓' : '', click: function () { self.toggleCol(c.k); } }; });
+    const filters = ['ALL'].concat(GLIST).map(function (f) { return { label: f === 'ALL' ? 'Todos' : f, on: st.filter === f, click: function () { self.setState({ filter: f }); } }; });
+
+    // candidatos y roles del puesto elegido
+    const rank = function (p) { if (!sel) return 2; const f = fitOf(p, sel.code); return f === 'nat' ? 0 : f === 'near' ? 1 : 2; };
+    const fitTxt = ['Natural', 'Cubre', 'Fuera de pos.'];
+    const bsel = sel ? bandsOf(sel) : null;
+    const band = st.band || 't';
+    const bandOf = function (pid) { if (!bsel) return null; if (bsel.t === pid) return 't'; return ['s', 'r', 'o'].find(function (k) { return bsel[k].indexOf(pid) >= 0; }) || null; };
+    const bfull = function (k) { return !!bsel && k !== 't' && bsel[k].length >= BAND[k].max; };
+    const candList = sel ? st.squad.slice().sort(function (a, b) { return rank(a) - rank(b) || (b.rating || 0) - (a.rating || 0); }).filter(function (p) { return (st.showAll || rank(p) < 2) && (st.showU18 || ageAt(p) >= 18 || !!bandOf(p.id)); }) : [];
+    const cands = candList.map(function (p) {
+      const r = rank(p); const si = slotOf[p.id]; const u = bandOf(p.id); const inSel = u === band;
+      const full = !inSel && bfull(band);
+      return {
+        name: p.name, fit: fitTxt[r], fitCls: 'f' + r, cls: u ? 'cur' : '',
+        where: u ? (BAND[u].word + ' aquí') : (si != null ? 'en el XI como ' + labels[si] : ''),
+        p1: p.pos[0], prest: p.pos.slice(1).join(' '), col: GCOL[GROUP[p.pos[0]]],
+        age: ageAt(p), wage: money(p.wage), rating: fmtR(p.rating),
+        exp: expOf(p) + (expWarn(p) ? ' ▲' : ''), expCls: expWarn(p) ? 'warnx' : '',
+        pickOff: inSel || full, pickLabel: inSel ? 'Elegido' : (full ? 'Completa' : (u ? 'Mover aquí' : (si != null && band === 't' ? 'Intercambiar' : 'Elegir'))),
+        pickAria: (inSel ? p.name + ' ya es ' : 'Poner a ' + p.name + ' como ') + BAND[band].word + ' de ' + selLabel,
+        pick: function () { if (!self._rowJustDragged) self.pick(p.id); }, down: function (e) { self.rowDown(p.id, e); }
+      };
+    });
+    const emptyTxt = { t: 'Sin titular', s: 'Hasta 2 suplentes', r: 'Hasta 3 recambios o juveniles', o: 'Sin jugadores' };
+    const bands = !sel ? [] : BANDS.map(function (k) {
+      const arr = k === 't' ? (bsel.t ? [bsel.t] : []) : bsel[k];
+      return {
+        id: k, title: BAND[k].title, count: k === 'o' ? String(arr.length) : arr.length + '/' + BAND[k].max,
+        on: k === band, cls: k === st.dragTier ? 'drop' : '', empty: arr.length === 0, emptyTxt: emptyTxt[k],
+        click: function () { if (!self._rowJustDragged) self.setState({ band: k, bandMsg: '' }); },
+        items: arr.map(function (pid, i) {
+          const q = byId[pid]; const nm = q ? q.name : '?';
+          return {
+            n: i + 1, name: nm, canMove: k !== 't', upOff: i === 0, downOff: i === arr.length - 1,
+            upAria: 'Subir a ' + nm, downAria: 'Bajar a ' + nm, rmAria: 'Quitar a ' + nm + ' de la lista',
+            drag: function (e) { self.rowDown(pid, e); },
+            view: function () { if (!self._rowJustDragged) self.setState({ view: pid }); },
+            moveUp: function () { self.moveInBand(k, i, -1); }, moveDown: function () { self.moveInBand(k, i, 1); }, remove: function () { self.removeInBand(k, i); }
+          };
+        })
+      };
+    });
+    const roleChips = sel ? (ROLES[sel.code] || []).map(function (r) { return { label: r, on: sel.role === r, click: function () { self.setRole(r); } }; }) : [];
+
+    // detalle
+    const dp = byId[st.view] || null;
+    let d = { name: '', age: '', wage: '', rating: '', exp: '', expCls: '', role: '', chips: [], allPos: [], primary: [], pickLabel: '', pickOff: true, pick: function () {}, remove: function () {} };
+    if (dp) {
+      const si = slotOf[dp.id];
+      const f = si != null ? fitOf(dp, st.slots[si].code) : null;
+      d = {
+        name: dp.name, age: ageAt(dp), wage: money(dp.wage), rating: fmtR(dp.rating), exp: expOf(dp) + (expWarn(dp) ? ' ▲' : ''), expCls: expWarn(dp) ? 'warnx' : '',
+        role: si != null ? labels[si] + ' · ' + fitWord[f] : 'No está en el XI',
+        chips: dp.pos.map(function (c) { return { code: c, col: GCOL[GROUP[c]], cls: sel && c === sel.code ? 'on' : '' }; }),
+        allPos: Object.keys(GROUP).map(function (c) {
+          const s = dp.pos.indexOf(c) >= 0 ? 2 : (coverOf(dp).indexOf(c) >= 0 ? 1 : 0);
+          return { code: c, cls: 's' + s, word: ['No cubre', 'Cubre', 'Natural'][s], aria: c + ': ' + ['no cubre', 'cubre', 'natural'][s] + '. Clic para cambiar', click: function () { self.cyclePos(dp.id, c); } };
+        }),
+        primary: dp.pos.map(function (c, k) { return { code: c, on: k === 0, click: function () { self.editPos(dp.id, function (pos) { return [c].concat(pos.filter(function (x) { return x !== c; })); }); } }; }),
+        pickOff: bandOf(dp.id) === band || bfull(band), pickLabel: bandOf(dp.id) === band ? 'Ya es ' + BAND[band].word + ' de ' + selLabel : (bfull(band) ? BAND[band].title + ': franja completa' : 'Poner como ' + BAND[band].word + ' de ' + selLabel),
+        pick: function () { self.pick(dp.id); }, remove: function () { self.removePlayer(dp.id); }
+      };
+    }
+
+    const tabs = [['Temporada actual', 0], ['Próxima temporada', 1], ['Temporada después', 2]].map(function (t) {
+      return { label: t[0], year: yearLabel(st.baseYear + t[1]), on: st.season === t[1], click: function () { self.setSeason(t[1]); } };
+    });
+
+    return {
+      // encabezado y ajustes
+      team: st.team, teamShown: st.team.trim() || 'Mi equipo', c1: st.c1, c2: st.c2, fg1: inkOn(st.c1), fg2: inkOn(st.c2), c2l: liftOn(st.c2), baseYear: st.baseYear,
+      settings: st.settings, openSettings: function () { self.setState({ settings: true }); }, closeSettings: function () { self.setState({ settings: false }); },
+      setKey: function (e) { if (e.key === 'Escape') self.setState({ settings: false }); },
+      onTeam: function (e) { self.set({ team: e.target.value }); },
+      onYear: function (e) { const v = parseInt(e.target.value, 10); if (v >= 2000 && v <= 2100) self.set({ baseYear: v }); },
+      onC1: function (e) { self.set({ c1: e.target.value }); },
+      onC2: function (e) { self.set({ c2: e.target.value }); },
+      swapColors: function () { self.set({ c1: st.c2, c2: st.c1 }); },
+      resetColors: function () { self.set({ c1: '#0b5d3b', c2: '#f2b84b' }); },
+      onFile: function (e) { self.onFile(e); }, importMsg: st.importMsg, hasMsg: !!st.importMsg,
+      // temporadas
+      tabs: tabs, showCopy: st.season > 0, copyPlan: function () { self.copyPlan(); },
+      // táctica
+      dirty: st.dirty, menuOpen: st.menuOpen, tacticName: tacticName, presetItems: presetItems, customItems: customItems, hasCustom: st.custom.length > 0,
+      toggleMenu: function () { self.setState({ menuOpen: !st.menuOpen }); },
+      closeMenu: function () { self.setState({ menuOpen: false }); },
+      ddKey: function (e) { if (e.key === 'Escape') self.setState({ menuOpen: false }); },
+      saveName: st.saveName, onName: function (e) { self.setState({ saveName: e.target.value }); },
+      nameKey: function (e) { if (e.key === 'Enter') self.saveNew(); },
+      saveNew: function () { self.saveNew(); }, updateCustom: function () { self.updateCustom(); },
+      isCustom: isCustom, showDel: !st.confirmDel, showConfirm: st.confirmDel,
+      askDelete: function () { self.setState({ confirmDel: true }); }, cancelDelete: function () { self.setState({ confirmDel: false }); }, doDelete: function () { self.doDelete(); },
+      // cancha
+      slotsV: slotsV, onMove: function (e) { self.onMove(e); }, onUp: function () { self.onUp(); }, onPitchClick: function () { self.onPitchClick(); },
+      hasSel: !!sel, noSel: !sel, selLabel: selLabel, selRole: sel ? (sel.role || 'Sin rol') : 'Ningún puesto elegido', selName: sel ? (selP ? selP.name : 'Puesto vacío') : '—',
+      clearSlot: function () { self.clearSlot(); }, autoPick: function () { self.autoPick(); }, clearXI: function () { self.clearXI(); },
+      xiFilled: xi.length, xiAge: xi.length ? dec((sum(xi, ageAt) / xi.length).toFixed(1)) : '–', xiWage: money(sum(xi, function (p) { return p.wage; })), xiRating: xi.length ? fmtR(sum(xi, function (p) { return p.rating; }) / xi.length) : '–',
+      // gráficos
+      charts: charts, scopeSquad: st.scope === 'squad', scopeXI: st.scope === 'xi',
+      setSquad: function () { self.setState({ scope: 'squad' }); }, setXI: function () { self.setState({ scope: 'xi' }); },
+      // selector de puesto
+      cands: cands, candCount: cands.length, noCands: cands.length === 0, roleChips: roleChips,
+      allLabel: st.showAll ? 'Solo naturales y que cubren' : 'Mostrar todas las posiciones',
+      toggleAll: function () { self.setState({ showAll: !st.showAll }); },
+      u18Label: st.showU18 ? 'Ocultar Sub-18' : 'Mostrar Sub-18', toggleU18: function () { self.setState({ showU18: !st.showU18 }); },
+      deselect: function () { self.setState({ sel: null }); },
+      // plantel
+      squadCount: st.squad.length, isSample: st.isSample,
+      q: st.q, onQ: function (e) { self.setState({ q: e.target.value }); },
+      filters: filters, heads: heads, rows: rows, noRows: rows.length === 0, gridCols: gridCols, minW: minW,
+      confirmClear: st.confirmClear, showClear: !st.confirmClear, askClear: function () { self.setState({ confirmClear: true }); }, cancelClear: function () { self.setState({ confirmClear: false }); }, doClear: function () { self.clearXI(); },
+      clearOff: !sel || (!selP && !sel.role && !(sel.alt && sel.alt.length)), bands: bands, hasBandMsg: !!st.bandMsg, bandMsg: st.bandMsg,
+      dragging: st.dragPid != null, gx: st.gx, gy: st.gy, dragName: byId[st.dragPid] ? byId[st.dragPid].name : '',
+      viewChips: viewChips, colChips: colChips, colCount: st.cols.length + 1, colsKey: function (e) { if (e.key === 'Escape') self.setState({ colsOpen: false }); }, colsOpen: st.colsOpen, toggleCols: function () { self.setState({ colsOpen: !st.colsOpen }); },
+      viewMod: st.viewId == null, viewName: st.viewName, onViewName: function (e) { self.setState({ viewName: e.target.value }); },
+      saveView: function () { self.saveView(); }, delView: function () { self.delView(); },
+      canDelView: st.views.some(function (v) { return v.id === st.viewId; }),
+      posMsg: st.posMsg, hasPosMsg: !!st.posMsg,
+      // detalle
+      d: d, hasDetail: !!dp, noDetail: !dp
+    };
+  }
+}
+</script>
+</body>
+</html>

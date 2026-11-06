@@ -1,0 +1,9 @@
+# Personal FM career saves (large, private)
+saves/
+*.fm
+out/
+vendor/
+__pycache__/
+node_modules/
+dist/
+.superpowers/

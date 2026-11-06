@@ -1,0 +1,7 @@
+{"reservas":{"source":"screenshot Aberdeen (Reservas) squad, 2025-04-06; wage $ per year; all contracts end 2026-05-31",
+ "players":{"Reuben Smillie":[19,25000,"2026-05-31"],"Harvey Bardsley":[19,14250,"2026-05-31"],"Kai Watson":[18,8250,"2026-05-31"],"Levi Morgan":[19,7750,"2026-05-31"],"Owen Calder":[18,7000,"2026-05-31"]}},
+ "barcelona":{"source":"screenshot FC Barcelona tactics screen, 2025-04-06 (header ID:1708), formation 4-2-3-1 MC MP Abierto, mentality Equilibrada",
+ "xi_slot_order_as_listed":["POR","DFD","DFCD","DFCI","DFI","MCCD","MCCI","MPD","MPC","MPI","DLC"],
+ "xi":[["Marc-André ter Stegen",1],["Jules Koundé",4],["Andreas Christensen",3],["Chadi Riad",19],["Alejandro Balde",14],["Noah Sadiki",22],["Pau Prim",26],["Lamine Yamal",27],["Fermín",16],["Gavi",6],["Vitor Roque",31]],
+ "subs":[["Iñaki Peña",13],["João Cancelo",23],["Roony Bardghji",20],["Marc Guiu",9],["Raphinha",11],["Pau Cubarsí",25],["Noah Darvich",null],["Ángel Alarcón",37],["Adrian Gill",44],["Héctor Fort",32],["Arnau Pradas",39]],
+ "note":"numbers read from the pitch tokens and substitutes list; Darvich's number not legible"}}

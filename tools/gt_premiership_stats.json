@@ -1,0 +1,10 @@
+{"source":"screenshot: Cinch Premiership (competition page ID:45) > Estadísticas > Estadísticas de jugadores, game date 2025-04-06. League-wide top lists, not per-player rows.",
+ "top_lists":{
+  "Partidos":"13 players - 32","Partidos como titular":"9 players - 32","Partidos ganados":"2 players - 26","Partidos perdidos":"Germán Salort, St Mirren - 21",
+  "Tarjetas amarillas":"Steve Seddon, Kilmarnock - 9","Tarjetas rojas":"13 players - 1","Jugador del partido":"Dodi Lukébakio, Rangers - 7",
+  "Distancia cubierta":"Stephen O'Donnell, Motherwell - 401.50 km","Distancia cubierta / 90 minutos":"Ewan Otoo, Livingston - 15.39 km",
+  "Calificación media":"Patrick Roberts, Celtic - 7.52","Cabezazos ganados":"Craig Halkett, Hearts - 276","Posesión ganada":"Lewis Mayo, Kilmarnock - 426","Posesión perdida":"Stephen O'Donnell, Motherwell - 434",
+  "Goles":"Mohanad Ali, Aberdeen - 20","Goles esperados":"Mohanad Ali, Aberdeen - 15.98","Hiperrendimiento en goles esperados":"Luke McCowan, Dundee - 5.36","Infrarrendimiento en goles esperados":"Dylan Vente, Hibernian - -4.55",
+  "Media de minutos por gol":"Mohanad Ali, Aberdeen - 88.65","Tiros":"Slobodan Rubežić, Aberdeen - 70"},
+ "players_by_appearances_32":[["Trevor Carson","Dundee",37,"NIR",14,9],["Germán Salort","St Mirren",36,"ARG",6,21],["Dimitar Mitov","St Johnstone",28,"BUL",12,14],["Liam Grimshaw","Dundee United",30,"ENG",8,19],["Shamal George","Livingston",27,"ENG",5,18],["Callum Slattery","Motherwell",26,"ENG",8,17],["Carl Piergianni","St Johnstone",32,"ENG",12,14],["Stephen O'Donnell","Motherwell",32,"SCO",8,17],["Michael Devlin","Livingston",31,"SCO",5,18],["Liam Kelly","Kilmarnock",29,"SCO",10,12],["Lewis Mayo","Kilmarnock",25,"SCO",10,12],["Steven Bradley","Livingston",23,"SCO",5,18],["Kai Fotheringham","Dundee United",21,"SCO",8,19]],
+ "note":"columns: name, club, age, nation, won, lost; appearance count 32"}

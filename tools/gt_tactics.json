@@ -1,0 +1,372 @@
+{
+ "source": "screenshot of FM24 Tactics screen (Vista general), Aberdeen, game date 2025-04-06",
+ "tactic": {
+  "name": "4-3-3 MC Abierto Positiva",
+  "style": "Tiquitaca Vertical",
+  "mentality": "Positiva",
+  "fluidity": "Flexible",
+  "in_possession": [
+   "Pases más cortos",
+   "Pasar al espacio",
+   "Salir jugando desde la defensa",
+   "Centros rasos",
+   "Encarar a la defensa",
+   "Buscar balón parado",
+   "Ser más expresivos",
+   "Doblar por la izquierda",
+   "Doblar por la derecha",
+   "Poco abierto"
+  ],
+  "in_transition": [
+   "Jugar en corto",
+   "Distribuir a centrales",
+   "Distribuir a los laterales",
+   "Distribuir con rapidez",
+   "A la contra",
+   "Contrapresión"
+  ],
+  "out_of_possession": [
+   "Línea defensiva más arriba",
+   "Bloque medio",
+   "Mucho más insistente",
+   "Evitar pases en corto del portero"
+  ],
+  "subs_count": "9/9"
+ },
+ "xi": [
+  {
+   "slot": "POR",
+   "role_duty": "PCI Apoyo",
+   "player": "Archie Mair",
+   "number": 12,
+   "stars": 2.0
+  },
+  {
+   "slot": "DFD",
+   "role_duty": "CAR Apoyo",
+   "player": "Danny McNamara",
+   "number": 34,
+   "stars": 3.0
+  },
+  {
+   "slot": "DFCD",
+   "role_duty": "DCT Defensa",
+   "player": "Stefan Gartenmann",
+   "number": 6,
+   "stars": 3.0
+  },
+  {
+   "slot": "DFCI",
+   "role_duty": "DFC Defensa",
+   "player": "Slobodan Rubežić",
+   "number": 33,
+   "stars": 3.0
+  },
+  {
+   "slot": "DFI",
+   "role_duty": "CAR Apoyo",
+   "player": "Jack MacKenzie",
+   "number": 3,
+   "stars": 2.5
+  },
+  {
+   "slot": "MC",
+   "role_duty": "PVO Defensa",
+   "player": "Leighton Clarkson",
+   "number": 10,
+   "stars": 3.0
+  },
+  {
+   "slot": "MECD",
+   "role_duty": "MEZ Apoyo",
+   "player": "Jamie McGrath",
+   "number": 7,
+   "stars": 3.0
+  },
+  {
+   "slot": "MECI",
+   "role_duty": "CTT Apoyo",
+   "player": "Connor Barron",
+   "number": 8,
+   "stars": 4.5
+  },
+  {
+   "slot": "MPD",
+   "role_duty": "II Apoyo",
+   "player": "Ryan Duncan",
+   "number": 22,
+   "stars": 3.5
+  },
+  {
+   "slot": "MPI",
+   "role_duty": "DLI Ataque",
+   "player": "Joaquín Muñoz",
+   "number": 11,
+   "stars": 4.5
+  },
+  {
+   "slot": "DLC",
+   "role_duty": "DLA Ataque",
+   "player": "Mohanad Ali",
+   "number": 20,
+   "stars": 3.0
+  }
+ ],
+ "subs": [
+  {
+   "slot": "S1",
+   "player": "Carl Rushworth",
+   "number": 31
+  },
+  {
+   "slot": "S2",
+   "player": "Nicky Devlin",
+   "number": 2
+  },
+  {
+   "slot": "S3",
+   "player": "Gabriele Corbo",
+   "number": 14
+  },
+  {
+   "slot": "S4",
+   "player": "Luan Patrick Wiedthauper",
+   "number": 13
+  },
+  {
+   "slot": "S5",
+   "player": "Beni Baningime",
+   "number": 25
+  },
+  {
+   "slot": "S6",
+   "player": "Merveille Papela",
+   "number": 5
+  },
+  {
+   "slot": "S7",
+   "player": "Dom Thomas",
+   "number": 23
+  },
+  {
+   "slot": "S8",
+   "player": "Yan Dhanda",
+   "number": 16
+  },
+  {
+   "slot": "S9",
+   "player": "Michael Obafemi",
+   "number": 9
+  }
+ ],
+ "not_selected": [
+  "Rodrigo Vitols",
+  "Andy Considine"
+ ],
+ "note": "abbreviations as displayed (Spanish UI); stars = in-game role rating shown as 0-5 stars, likely computed, not stored",
+ "tactics": {
+  "1": {
+   "name": "4-4-2 Positiva - Contrapresión",
+   "style": "Contrapresión",
+   "mentality": "Positiva",
+   "fluidity": "Fluido",
+   "slots": [
+    [
+     "POR",
+     "PCI",
+     "Ataque",
+     "Archie Mair"
+    ],
+    [
+     "DFD",
+     "CAR",
+     "Apoyo",
+     "Danny McNamara"
+    ],
+    [
+     "DFCD",
+     "DCT",
+     "Defensa",
+     "Stefan Gartenmann"
+    ],
+    [
+     "DFCI",
+     "DCT",
+     "Defensa",
+     "Slobodan Rubežić"
+    ],
+    [
+     "DFI",
+     "CAR",
+     "Apoyo",
+     "Jack MacKenzie"
+    ],
+    [
+     "MED",
+     "II",
+     "Apoyo",
+     "Ryan Duncan"
+    ],
+    [
+     "MECD",
+     "PVO",
+     "Defensa",
+     "Jamie McGrath"
+    ],
+    [
+     "MECI",
+     "CTT",
+     "Apoyo",
+     "Connor Barron"
+    ],
+    [
+     "MEI",
+     "II",
+     "Apoyo",
+     "Joaquín Muñoz"
+    ],
+    [
+     "DLCD",
+     "2ºD",
+     "Apoyo",
+     "Mohanad Ali"
+    ],
+    [
+     "DLCI",
+     "DLA",
+     "Ataque",
+     "Leighton Clarkson"
+    ]
+   ],
+   "in_possession": [
+    "Pases más cortos",
+    "Pasar al espacio",
+    "Salir jugando desde la defensa",
+    "Intentar llevar el balón hasta el área",
+    "Buscar balón parado",
+    "Ritmo algo más alto"
+   ],
+   "in_transition": [
+    "Jugar en corto",
+    "Distribuir a centrales",
+    "Distribuir a los laterales",
+    "A la contra",
+    "Contrapresión"
+   ],
+   "out_of_possession": [
+    "Línea defensiva más arriba",
+    "Presión adelantada",
+    "Mucho más insistente",
+    "Evitar pases en corto del portero",
+    "Adelantar más"
+   ]
+  },
+  "2": {
+   "name": "4-3-3 MC Abierto Positiva - Tiquitaca vertical",
+   "style": "Tiquitaca vertical",
+   "mentality": "Positiva",
+   "fluidity": "Flexible",
+   "slots_same_as": "tactic (top-level xi)"
+  },
+  "3": {
+   "name": "5-3-2 MC CR Positiva - Tiquitaca vertical",
+   "style": "Tiquitaca vertical",
+   "mentality": "Positiva",
+   "fluidity": "Flexible",
+   "slots": [
+    [
+     "POR",
+     "PCI",
+     "Apoyo",
+     "Archie Mair"
+    ],
+    [
+     "DFCD",
+     "DCT",
+     "Defensa",
+     "Stefan Gartenmann"
+    ],
+    [
+     "DFC",
+     "DFC",
+     "Cubrir",
+     "Ryan Duncan"
+    ],
+    [
+     "DFCI",
+     "DFC",
+     "Defensa",
+     "Slobodan Rubežić"
+    ],
+    [
+     "CRD",
+     "CRC",
+     "Apoyo",
+     "Danny McNamara"
+    ],
+    [
+     "MC",
+     "MC",
+     "Apoyo",
+     "Joaquín Muñoz"
+    ],
+    [
+     "CRI",
+     "CRC",
+     "Apoyo",
+     "Jack MacKenzie"
+    ],
+    [
+     "MECD",
+     "MEZ",
+     "Ataque",
+     "Jamie McGrath"
+    ],
+    [
+     "MECI",
+     "CTT",
+     "Apoyo",
+     "Connor Barron"
+    ],
+    [
+     "DLCD",
+     "2ºD",
+     "Apoyo",
+     "Mohanad Ali"
+    ],
+    [
+     "DLCI",
+     "DLA",
+     "Ataque",
+     "Leighton Clarkson"
+    ]
+   ],
+   "in_possession": [
+    "Pases más cortos",
+    "Salir jugando desde la defensa",
+    "Intentar llevar el balón hasta el área",
+    "Buscar balón parado",
+    "Ser más expresivos",
+    "Enfocar el juego por el centro",
+    "Doblar por la izquierda",
+    "Doblar por la derecha",
+    "Poco abierto"
+   ],
+   "in_transition": [
+    "Jugar en corto",
+    "Distribuir a centrales",
+    "Distribuir a los laterales",
+    "A la contra",
+    "Contrapresión"
+   ],
+   "out_of_possession": [
+    "Línea defensiva más arriba",
+    "Presión adelantada",
+    "Mucho más insistente",
+    "Evitar pases en corto del portero",
+    "Ser agresivos"
+   ]
+  }
+ },
+ "tactics_note": "Three tactic slots (tabs 1,2,3) all share the same 9 substitutes S1..S9 (Rushworth, Devlin, Corbo, Luan Patrick, Baningime, Papela, Thomas, Dhanda, Obafemi). The tab that was active in the first Tactics screenshot was tab 2."
+}
