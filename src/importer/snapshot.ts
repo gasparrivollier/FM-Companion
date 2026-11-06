@@ -6,6 +6,7 @@ import { ImportError } from "./errors.ts";
 import { managedTeamFromTactics } from "./meta.ts";
 import { homeGrownFrom, readRelations, type RelationEntry } from "./relations.ts";
 import { SaveArchive } from "./savelens/archive.ts";
+import { sanityWarnings } from "./validate.ts";
 import { parseSave, type ParsedSave, type Player } from "./savelens/index.ts";
 import { resolveManagedSquads } from "./squads.ts";
 
@@ -79,7 +80,7 @@ export function buildSnapshotFrom(parsed: ParsedSave, tactics: Buffer, saveFileN
   if (noEnd) warnings.push(`${noEnd} contracts without an end date.`);
 
   progress(100, "Done");
-  return {
+  const snapshot: Snapshot = {
     version: SNAPSHOT_VERSION,
     meta: {
       saveFileName,
@@ -92,6 +93,8 @@ export function buildSnapshotFrom(parsed: ParsedSave, tactics: Buffer, saveFileN
     squads: out,
     warnings,
   };
+  snapshot.warnings.push(...sanityWarnings(snapshot));
+  return snapshot;
 }
 
 export function buildSnapshot(savePath: string, options: BuildOptions = {}): Snapshot {
