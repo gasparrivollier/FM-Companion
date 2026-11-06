@@ -107,3 +107,16 @@ To check a new claim: take a screenshot of the relevant game screen, transcribe 
 - The parser holds 2.1 GB in memory; a browser or a small server would need a different strategy (see 08).
 - `contract_probe.py` and the exploration scripts print numbers that are **worse** than the current extractor; do not use them for conclusions.
 - `out/` is large and regenerated; never commit it. `saves/` holds private career data; never commit or share it.
+
+## 8. The importer (TypeScript)
+
+The application's importer lives in `src/importer/` and replaces the Python tools for production use; the tools stay as the research reference. It reads a save and writes a versioned snapshot (`src/shared/snapshot.ts`) of the managed club's three squads.
+
+```bash
+npm install
+npm run import -- "saves/<your save>.fm" out/snapshot.json   # prints JSON lines: progress..., then done or error
+npm test                                                     # unit tests; integration tests use saves/*.fm or $FM_SAVE and skip without it
+```
+
+On the sample save the whole run takes about 30 seconds and the output passes `isSnapshot`. The importer opens the save read-only (its size, modification time and SHA-256 are checked unchanged in `tests/importer/run.test.ts`). `src/importer/savelens/SOURCE.md` records the pinned parser.
+

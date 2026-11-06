@@ -34,4 +34,5 @@ Process skills come first, since they set the approach. Implementation skills fo
 - Start at `docs/README.md`. It indexes the reference documents (01 to 08), the confidence labels, the decisions taken and the repository map.
 - `docs/03-data-dictionary.md` is the source of truth for what can be read from a save and how sure we are. `docs/research/` is the chronological working log and is superseded by it.
 - Research tooling is in `tools/` (`tools/prepare.sh "saves/<save>.fm"` regenerates everything). `saves/`, `out/` and `vendor/` are git-ignored and must never be committed.
+- The TypeScript importer is in `src/importer/` (`npm run import -- "saves/<save>.fm" out/snapshot.json`, `npm test`). Plan: `docs/superpowers/plans/`.
 - Match players by `uid` or `id`, never by displayed name. The save is the only input source.

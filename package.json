@@ -6,8 +6,9 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "test": "node --max-old-space-size=4096 node_modules/vitest/vitest.mjs run",
+    "typecheck": "tsc --noEmit",
+    "import": "node --max-old-space-size=4096 src/importer/run.ts"
   },
   "private": "true",
   "type": "module",
