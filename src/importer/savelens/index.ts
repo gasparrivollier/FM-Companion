@@ -4,6 +4,7 @@ import { readPeople, readAbilities, linkAbilities } from "./people.ts";
 import { readClubs } from "./clubs.ts";
 import { readTeams } from "./teams.ts";
 import { ATTRIBUTES, POSITIONS, displayAttribute } from "./attributes.ts";
+import { checkFormatVersion } from "../meta.ts";
 
 export const PARSER_VERSION = "fm24-7";
 export type Player = {
@@ -48,10 +49,11 @@ export function parseSave(
   try {
     const info = a.member("game_info.dat"),
       formatVersion = info.toString("ascii", 12, 20);
-    if (formatVersion !== "24.3.0+0")
+    const gate = checkFormatVersion(formatVersion);
+    if (!gate.ok)
       throw new SaveError(
         "UNSUPPORTED_VERSION",
-        `Save format ${formatVersion} is not supported. FM24 24.3 saves are required.`,
+        `Save format ${formatVersion} is not supported. FM24 saves are required.`,
       );
     onProgress(10, "Reading player database");
     const b = a.member("game_db.dat");
@@ -128,6 +130,7 @@ export function parseSave(
       );
     onProgress(88, "Preparing search index");
     const warnings: string[] = [];
+    if (gate.warning) warnings.push(gate.warning);
     if (ambiguous + unbound)
       warnings.push(
         `${ambiguous + unbound} ambiguous player records were excluded rather than assigned uncertain ratings.`,
