@@ -2,7 +2,7 @@ import { SaveArchive, SaveError } from "./archive.ts";
 import { readNames } from "./strings.ts";
 import { readPeople, readAbilities, linkAbilities } from "./people.ts";
 import { readClubs } from "./clubs.ts";
-import { readTeams } from "./teams.ts";
+import { readTeams, type Team } from "./teams.ts";
 import { ATTRIBUTES, POSITIONS, displayAttribute } from "./attributes.ts";
 import { checkFormatVersion } from "../meta.ts";
 
@@ -18,6 +18,7 @@ export type Player = {
   otherNationIds: number[];
   clubId: number | null;
   club: string | null;
+  team: number;
   ca: number;
   pa: number;
   positions: string[];
@@ -32,6 +33,8 @@ export type ParsedSave = {
   gameDate: string;
   players: Player[];
   clubs: ReturnType<typeof readClubs>;
+  teams: Team[];
+  db: Buffer;
   diagnostics: Record<string, number>;
   warnings: string[];
 };
@@ -110,6 +113,7 @@ export function parseSave(
         otherNationIds: p.otherNations,
         clubId,
         club: clubId === null ? null : (clubMap.get(clubId)?.shortName ?? null),
+        team: a.team,
         ca: a.ca,
         pa: a.pa,
         positions: POSITIONS.filter((_, i) => a.positions[i] >= 15),
@@ -141,6 +145,8 @@ export function parseSave(
       gameDate,
       players,
       clubs,
+      teams,
+      db: b,
       diagnostics: {
         people: people.length,
         identities: people.filter((p) => p.id >= 0).length,

@@ -120,6 +120,12 @@ The `u32` at `p-23` of the ability block is the **team ordinal**. The team recor
 - The **SaveLens parser reads this table one row off** (it looks the value up as ordinal + 1) and misses Aberdeen's first-team row, so its `clubId` is right for first teams by coincidence, right for the Reservas, and **null for the Sub-18** (these are among the 29,896 club-less players). Do not rely on the parser's `clubId` alone.
 - Team-head `type` bytes seen: 100 (the Reservas team; Aberdeen's own first-team row is **not** read by the parser), 18 (the Sub-18 team), 19, 20, 21, 23. Their meaning is **unknown** beyond those two observations.
 
+**Rule used by the importer to find a club's squads** (`src/importer/squads.ts`; validated on Aberdeen only):
+- A team head (found by the parser) holds the **owner** at `+0`, the team ordinal at `+14` and the team uid at `+18`.
+- A club's own row has owner = club id and uid = club uid. The club's **main team is the next row** (ordinal + 1, uid + 1). So the managed team value from `tactics_man.dat` (1310) minus one is the ordinal of the club row (1309), whose uid (1535) identifies the club. The parser does not return Aberdeen's main-team row, which is why the club is found from the row before it.
+- Teams created by the game (uid 2,000,000,000 or more) carry **owner = club id + 1**. Aberdeen's: ordinal 65414 (type 100, Reservas), 65415 (type 21, 42 members), 65416 (type 18, Sub-18), and four later type-100 teams (139307, 139324, 139325, 139337). The importer takes the lowest-ordinal type 100 as Reservas and the lowest-ordinal type 18 as Sub-18. Over 45,039 clubs with created teams the type patterns vary (for example only type 19 for Barcelona), so other clubs may get no Reservas or Sub-18; the importer then returns an empty squad and a warning.
+- A player's team value (`u32` at `ability - 23`) is the team ordinal; the parser exposes it as `team`.
+
 ### 5.3 Club table
 
 Name, short name, club id, uid, nation (ordinal): from the parser. 50,801 clubs. A club's nation is needed for the "liga local" KPI.
