@@ -51,6 +51,15 @@ describe("windows workflow", () => {
     expect(wf).toContain("actions/upload-artifact");
     expect(wf).toContain("release/*.exe");
   });
+  it("runs the e2e tests as separate steps after the installer is built, and keeps their results", () => {
+    const dist = wf.indexOf("npm run dist");
+    for (const step of ["npm run build:e2e", "npm run e2e\n", "npm run e2e:installer"]) {
+      expect(wf.indexOf(step), step).toBeGreaterThan(dist);
+    }
+    expect(wf.indexOf("npm run e2e:installer")).toBeGreaterThan(wf.indexOf("npm run e2e\n"));
+    expect(wf).toMatch(/if:\s*always\(\)/);
+    expect(wf).toContain("test-results");
+  });
   it("publishes nothing and uses no secrets", () => {
     expect(wf).not.toMatch(/secrets\./);
     expect(wf).not.toMatch(/gh release|softprops|action-gh-release|--publish/i);

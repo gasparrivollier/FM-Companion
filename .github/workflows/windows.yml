@@ -1,6 +1,7 @@
 name: Windows installer
 
 # Builds the .exe installer on a Windows runner and attaches it to the run as an artifact.
+# It also runs the end-to-end tests against the app and the installer it just built.
 # It publishes nothing and needs no credentials.
 on:
   workflow_dispatch:
@@ -29,3 +30,12 @@ jobs:
           name: FM24-Companion-installer
           path: release/*.exe
           if-no-files-found: error
+      - run: npm run build:e2e
+      - run: npm run e2e
+      - run: npm run e2e:installer
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-test-results
+          path: test-results/
+          if-no-files-found: ignore
