@@ -14,7 +14,9 @@
     "build:ui": "vite build",
     "build:electron": "node scripts/build-electron.mjs",
     "electron:smoke": "node scripts/build-electron.mjs && electron . --smoke",
-    "electron:dev": "node scripts/electron-dev.mjs"
+    "electron:dev": "node scripts/electron-dev.mjs",
+    "dist": "npm run build:ui && npm run build:electron && electron-builder --win nsis",
+    "electron:smoke-ui": "npm run build:ui && node scripts/build-electron.mjs && electron . --smoke-ui"
   },
   "private": true,
   "type": "module",
@@ -26,11 +28,13 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.2.1",
     "electron": "^45.2.3",
+    "electron-builder": "^26.18.0",
     "esbuild": "^0.28.2",
     "jsdom": "^31.0.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.6",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.0",
+    "yaml": "^2.9.1"
   },
   "license": "GPL-3.0-only",
   "dependencies": {
@@ -39,5 +43,6 @@
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
-  "main": "dist-electron/main.cjs"
+  "main": "dist-electron/main.cjs",
+  "author": "Gaspar Rivollier"
 }

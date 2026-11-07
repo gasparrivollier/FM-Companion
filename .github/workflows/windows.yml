@@ -1,0 +1,31 @@
+name: Windows installer
+
+# Builds the .exe installer on a Windows runner and attaches it to the run as an artifact.
+# It publishes nothing and needs no credentials.
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run typecheck
+      - run: npm run dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FM24-Companion-installer
+          path: release/*.exe
+          if-no-files-found: error
