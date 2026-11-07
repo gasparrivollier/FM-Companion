@@ -55,6 +55,7 @@ export async function loadSave(page: Page, app: ElectronApplication, savePath: s
 
 /** A mouse drag in small steps, because the planner listens to pointer events on the document. */
 export async function drag(page: Page, from: Locator, to: Locator): Promise<void> {
+  await from.scrollIntoViewIfNeeded();
   const a = (await from.boundingBox())!;
   const b = (await to.boundingBox())!;
   await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2);
