@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { defaultOwnerData } from "../../src/planner/domain/ownerData.ts";
 import { reconcile } from "../../src/planner/domain/reconcile.ts";
 import { kpis, statusLabel } from "../../src/planner/domain/stats.ts";
@@ -9,7 +9,9 @@ import { isSnapshot } from "../../src/shared/snapshot.ts";
 
 const FILE = "out/snapshot.json";
 describe.skipIf(!existsSync(FILE))("planner on the real snapshot", () => {
-  const snap = JSON.parse(readFileSync(FILE, "utf8"));
+  // read in beforeAll: a skipped describe still runs its body, and the file is absent on CI and on a fresh clone
+  let snap: any;
+  beforeAll(() => { snap = JSON.parse(readFileSync(FILE, "utf8")); });
   it("is a valid snapshot", () => { expect(isSnapshot(snap)).toBe(true); });
   it("builds every player with at least one natural position and renders every row", () => {
     const r = reconcile(defaultOwnerData(), snap);
