@@ -3,6 +3,8 @@ import { COLS, VIEWS } from "../domain/columns.ts";
 import type { OwnerData, Plan, Settings, Slot } from "../domain/ownerData.ts";
 import type { Pos } from "../domain/positions.ts";
 import { baseSeason } from "../domain/season.ts";
+import { reconcile } from "../domain/reconcile.ts";
+import type { Snapshot } from "../../shared/snapshot.ts";
 import { buildPlayer, type Mark, type PlannerPlayer } from "../domain/squad.ts";
 import { PRESETS, blankSlots, remap } from "../domain/tactics.ts";
 
@@ -62,7 +64,8 @@ export type Action =
   | { type: "setFilter"; filter: string }
   | { type: "setQuery"; q: string }
   | { type: "setSort"; key: string }
-  | { type: "toggleShowAll" };
+  | { type: "toggleShowAll" }
+  | { type: "loadSnapshot"; snapshot: Snapshot };
 
 export function initialState(data: OwnerData, players: PlannerPlayer[], gameDate: string, club: Club, left: number[]): PlannerState {
   const base = baseSeason(data, gameDate);
@@ -255,5 +258,21 @@ export function reduce(s: PlannerState, a: Action): PlannerState {
     case "setSort":
       return s.sortKey === a.key ? { ...s, sortDir: (-s.sortDir) as 1 | -1 } : { ...s, sortKey: a.key, sortDir: DEF_SORT_DIR[a.key] ?? 1 };
     case "toggleShowAll": return { ...s, showAll: !s.showAll };
+    case "loadSnapshot": {
+      const r = reconcile(s.data, a.snapshot);
+      const gameDate = a.snapshot.meta.gameDate;
+      const c = a.snapshot.meta.club;
+      const base = baseSeason(r.data, gameDate);
+      const season = s.season >= base && s.season <= base + 2 ? s.season : base;
+      return {
+        ...s, data: r.data, players: r.players, left: r.left, gameDate, base, season, sel: null, view: null, bandMsg: "",
+        club: { id: c.id, nationOrdinal: c.nationOrdinal, name: c.name },
+      };
+    }
   }
+}
+
+/** True when the player is in a plan but no longer in the squad. */
+export function isLeft(s: PlannerState, uid: number): boolean {
+  return s.left.includes(uid);
 }
