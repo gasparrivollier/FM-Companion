@@ -5,6 +5,8 @@ export interface SnapshotSource { load(): Promise<unknown> }
 export interface OwnerStorage {
   read(): Promise<string | null>;
   write(text: string): Promise<void>;
+  /** Optional synchronous write, used when the page is being hidden (the Electron bridge provides one). */
+  writeSync?(text: string): void;
 }
 
 export function memoryStorage(initial?: string): OwnerStorage {

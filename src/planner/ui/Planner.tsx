@@ -3,6 +3,7 @@ import type { Snapshot } from "../../shared/snapshot.ts";
 import { inkOn, liftOn } from "../domain/colors.ts";
 import { reduce, type PlannerState } from "../state/reducer.ts";
 import type { OwnerStorage } from "../state/storage.ts";
+import { createWriteQueue } from "../state/writeQueue.ts";
 import { Analysis, Kpis } from "./Analysis.tsx";
 import type { Ui } from "./common.ts";
 import { Header } from "./Header.tsx";
@@ -30,10 +31,19 @@ export function Planner({ initial, snapshot, storage, newId = defaultId, onLoadS
   const pending = useRef<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
+  const queue = useRef(createWriteQueue((t) => storage.write(t), storage.writeSync));
   const flush = () => {
+    clearTimeout(timer.current);
     const text = pending.current;
     pending.current = null;
-    if (text !== null) storage.write(text).then(() => setSaveError(null), (e: unknown) => setSaveError(String((e as Error)?.message ?? e)));
+    if (text !== null) queue.current.enqueue(text).then(() => setSaveError(null), (e: unknown) => setSaveError(String((e as Error)?.message ?? e)));
+  };
+  // the page is going away: write what is pending now, synchronously when the host allows it
+  const flushOnHide = () => {
+    clearTimeout(timer.current);
+    const text = pending.current;
+    pending.current = null;
+    if (text !== null) queue.current.flushNow(text);
   };
   const loaded = useRef(state.data);
   useEffect(() => {
@@ -43,7 +53,10 @@ export function Planner({ initial, snapshot, storage, newId = defaultId, onLoadS
     clearTimeout(timer.current);
     timer.current = setTimeout(flush, SAVE_DELAY_MS);
   }, [state.data]);
-  useEffect(() => () => { clearTimeout(timer.current); flush(); }, []);
+  useEffect(() => {
+    window.addEventListener("pagehide", flushOnHide);
+    return () => { window.removeEventListener("pagehide", flushOnHide); flush(); };
+  }, []);
 
   const { c2 } = state.data.settings;
   const dnd = useRowDrag((uid, t) => {
