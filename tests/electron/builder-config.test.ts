@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 import { parse } from "yaml";
 
 const cfg = parse(readFileSync("electron-builder.yml", "utf8"));
-const wf = readFileSync(".github/workflows/windows.yml", "utf8");
+// a Windows checkout may turn the workflow into CRLF
+const wf = readFileSync(".github/workflows/windows.yml", "utf8").replace(/\r\n/g, "\n");
 const pkg = JSON.parse(readFileSync("package.json", "utf8"));
 
 describe("electron-builder.yml", () => {
@@ -50,6 +51,17 @@ describe("windows workflow", () => {
     expect(wf.indexOf("npm test")).toBeLessThan(wf.indexOf("npm run dist"));
     expect(wf).toContain("actions/upload-artifact");
     expect(wf).toContain("release/*.exe");
+  });
+  it("runs the e2e tests as separate steps after the installer is built, and keeps their results", () => {
+    const dist = wf.indexOf("npm run dist");
+    for (const step of ["npm run build:e2e", "npm run e2e --", "npm run e2e:installer"]) {
+      expect(wf.indexOf(step), step).toBeGreaterThan(dist);
+    }
+    expect(wf.indexOf("npm run e2e:installer")).toBeGreaterThan(wf.indexOf("npm run e2e --"));
+    // the installer test must still run when the first e2e step failed
+    expect(wf).toMatch(/if:\s*\$\{\{\s*!cancelled\(\)\s*\}\}\s*\n\s*run: npm run e2e:installer/);
+    expect(wf).toMatch(/if:\s*always\(\)/);
+    expect(wf).toContain("test-results");
   });
   it("publishes nothing and uses no secrets", () => {
     expect(wf).not.toMatch(/secrets\./);

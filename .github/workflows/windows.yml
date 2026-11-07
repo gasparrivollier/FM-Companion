@@ -1,6 +1,7 @@
 name: Windows installer
 
 # Builds the .exe installer on a Windows runner and attaches it to the run as an artifact.
+# It also runs the end-to-end tests against the app and the installer it just built.
 # It publishes nothing and needs no credentials.
 on:
   workflow_dispatch:
@@ -29,3 +30,15 @@ jobs:
           name: FM24-Companion-installer
           path: release/*.exe
           if-no-files-found: error
+      - run: npm run build:e2e
+      # each step keeps its own output folder (Playwright empties its output folder at start), and the
+      # installer test runs even when the first e2e step failed
+      - run: npm run e2e -- --output=test-results/e2e
+      - if: ${{ !cancelled() }}
+        run: npm run e2e:installer -- --output=test-results/installer
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-test-results
+          path: test-results/
+          if-no-files-found: ignore

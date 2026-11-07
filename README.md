@@ -20,6 +20,7 @@ npm install
 npm run electron:dev        # Vite + Electron
 npm run electron:smoke -- "path/to/your save.fm"   # import a save inside Electron, print the counts
 npm run dev                 # planner in a plain browser, reading out/snapshot.json
+npm run build:e2e && npm run e2e   # end-to-end tests that drive the real app (invented squads, no save needed)
 ```
 
 The importer on its own:
