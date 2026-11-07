@@ -1,14 +1,25 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import type { Snapshot } from "../../shared/snapshot.ts";
-import { initialState, reduce, type PlannerState } from "../state/reducer.ts";
+import { inkOn, liftOn } from "../domain/colors.ts";
+import { reduce, type PlannerState } from "../state/reducer.ts";
 import type { OwnerStorage } from "../state/storage.ts";
+import { Header } from "./Header.tsx";
+import { Pitch } from "./Pitch.tsx";
 import { SeasonTabs } from "./SeasonTabs.tsx";
+import { SettingsModal } from "./SettingsModal.tsx";
+import { TacticPanel } from "./TacticPanel.tsx";
 
 const SAVE_DELAY_MS = 300;
+const defaultId = () => "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
 
-export function Planner({ initial, snapshot, storage }: { initial: PlannerState; snapshot: Snapshot; storage: OwnerStorage; newId?: () => string }) {
+export interface PlannerProps {
+  initial: PlannerState; snapshot: Snapshot; storage: OwnerStorage; newId?: () => string; onLoadSave?: () => void;
+}
+
+export function Planner({ initial, snapshot, storage, newId = defaultId, onLoadSave }: PlannerProps) {
   const [state, dispatch] = useReducer(reduce, initial);
   const [dismissed, setDismissed] = useState(false);
+  const [settings, setSettings] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const pending = useRef<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -25,9 +36,11 @@ export function Planner({ initial, snapshot, storage }: { initial: PlannerState;
   }, [state.data]);
   useEffect(() => () => { clearTimeout(timer.current); flush(); }, []);
 
+  const { c1, c2 } = state.data.settings;
+  void c1;
   return (
-    <div className="app">
-      <h1 className="tname">FM24 Companion</h1>
+    <div className="app" style={{ ["--acc" as string]: c2, ["--acc-ink" as string]: inkOn(c2), ["--accl" as string]: liftOn(c2) }}>
+      <Header state={state} onSettings={() => setSettings(true)} onLoadSave={onLoadSave} />
       {snapshot.warnings.length > 0 && !dismissed && (
         <div className="panel" role="status" style={{ flex: "1 1 100%" }}>
           <ul>{snapshot.warnings.map((w) => <li key={w}>{w}</li>)}</ul>
@@ -36,8 +49,11 @@ export function Planner({ initial, snapshot, storage }: { initial: PlannerState;
       )}
       {saveError && <div className="panel" role="alert" style={{ flex: "1 1 100%" }}>No se pudieron guardar los datos propios: {saveError}</div>}
       <SeasonTabs state={state} dispatch={dispatch} />
+      <div className="left">
+        <TacticPanel state={state} dispatch={dispatch} newId={newId} />
+        <Pitch state={state} dispatch={dispatch} />
+      </div>
+      {settings && <SettingsModal state={state} dispatch={dispatch} onClose={() => setSettings(false)} />}
     </div>
   );
 }
-
-export { initialState };

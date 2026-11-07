@@ -11,10 +11,10 @@ type Phase =
   | { kind: "error"; title: string; message: string }
   | { kind: "ready"; initial: PlannerState; snapshot: Snapshot };
 
-export interface AppProps { source: SnapshotSource; storage: OwnerStorage; newId?: () => string }
+export interface AppProps { source: SnapshotSource; storage: OwnerStorage; newId?: () => string; onLoadSave?: () => void }
 
 /** Loads the owner's data and the snapshot. Any problem stops here: nothing is rendered that could write over the owner's data. */
-export function App({ source, storage, newId }: AppProps) {
+export function App({ source, storage, newId, onLoadSave }: AppProps) {
   const [phase, setPhase] = useState<Phase>({ kind: "loading" });
   useEffect(() => {
     let live = true;
@@ -43,5 +43,5 @@ export function App({ source, storage, newId }: AppProps) {
   if (phase.kind === "error") {
     return <div className="app"><div className="panel" role="alert"><h1 className="tname">{phase.title}</h1><p>{phase.message}</p></div></div>;
   }
-  return <Planner initial={phase.initial} snapshot={phase.snapshot} storage={storage} newId={newId} />;
+  return <Planner initial={phase.initial} snapshot={phase.snapshot} storage={storage} newId={newId} onLoadSave={onLoadSave} />;
 }
