@@ -35,4 +35,5 @@ Process skills come first, since they set the approach. Implementation skills fo
 - `docs/03-data-dictionary.md` is the source of truth for what can be read from a save and how sure we are. `docs/research/` is the chronological working log and is superseded by it.
 - Research tooling is in `tools/` (`tools/prepare.sh "saves/<save>.fm"` regenerates everything). `saves/`, `out/` and `vendor/` are git-ignored and must never be committed.
 - The TypeScript importer is in `src/importer/` (`npm run import -- "saves/<save>.fm" out/snapshot.json`, `npm test`). Plan: `docs/superpowers/plans/`.
+- The planner UI is in `src/planner/` (`npm run dev` serves it and reads `out/snapshot.json`; domain logic is pure TypeScript under `src/planner/domain/`). Plan: `docs/superpowers/plans/`.
 - Match players by `uid` or `id`, never by displayed name. The save is the only input source.

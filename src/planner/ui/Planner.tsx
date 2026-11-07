@@ -55,7 +55,7 @@ export function Planner({ initial, snapshot, storage, newId = defaultId, onLoadS
       {snapshot.warnings.length > 0 && !dismissed && (
         <div className="panel" role="status" style={{ flex: "1 1 100%" }}>
           <ul>{snapshot.warnings.map((w) => <li key={w}>{w}</li>)}</ul>
-          <button type="button" className="btn" onClick={() => setDismissed(true)}>Cerrar aviso</button>
+          <button type="button" className="btn" style={{ alignSelf: "flex-start" }} onClick={() => setDismissed(true)}>Cerrar aviso</button>
         </div>
       )}
       {saveError && <div className="panel" role="alert" style={{ flex: "1 1 100%" }}>No se pudieron guardar los datos propios: {saveError}</div>}

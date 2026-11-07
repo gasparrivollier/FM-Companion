@@ -71,3 +71,20 @@ Candidate features for a later phase (not decided):
 | 6 | How plans survive a new save of the same career (join on uid; verify that uids are stable) | persistence |
 | 7 | Language of the app (the mockup is Spanish; the save is language independent, role and status names are a mapping table, see 04) | UI |
 | 8 | Whether to import the game's selection and tactic names as a starting point | optional feature |
+
+## 7. Build status (planner UI, plan 2)
+
+Every row above that was **Available** or **Derived** is built in `src/planner/`. Decisions taken in the build:
+
+| Topic | Built as |
+|---|---|
+| "Rtg" | CA (1 to 200), no decimals |
+| Natural and "cubre" | imported proposal: natural = familiarity 20 (else the single best position), covers = 15 or more; the owner's marks always win; SW is ignored (no prototype position) |
+| Squads | first team by default; one switch adds Reservas and Sub-18 to the table, charts and candidates |
+| Wage display | £, $ (1.2492) or €, rates editable in Settings |
+| Canteranos | **approximate**, first team only: club-trained = relation (1,72) with the club's id; local league = relation (8,70) with the club's nation (Aberdeen sample: 5 and 10 of 31) |
+| Squad status | shown in the player detail, only for the seven labelled codes |
+| Pre-filled XI from the game | not done; the XI starts empty, and formation changes never auto-fill |
+| Automatic XI | out of scope |
+
+Run it with `npm run import -- "saves/<save>.fm" out/snapshot.json`, then `npm run dev`.

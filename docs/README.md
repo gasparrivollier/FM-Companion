@@ -64,6 +64,11 @@ CLAUDE.md                project instructions (Superpowers workflow, docs pointe
 design/                  the prototype exported from Claude (read-only reference)
 docs/                    this documentation
 tools/                   extraction tools and ground-truth files (see 07)
+src/importer/            the save importer (writes the snapshot)
+src/planner/             the planner UI: domain/ (pure logic), state/ (reducer, storage seams), ui/ (React)
+src/shared/              the snapshot contract
+tests/                   Vitest tests (integration tests skip without a save in saves/)
+docs/superpowers/        design spec and implementation plans
 saves/                   your save games (git-ignored, private)
 out/                     generated intermediate files (git-ignored, large)
 vendor/                  third-party parser sources (git-ignored)
