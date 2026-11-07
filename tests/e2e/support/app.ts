@@ -53,9 +53,25 @@ export async function loadSave(page: Page, app: ElectronApplication, savePath: s
   await page.getByRole("dialog", { name: "Importando el save" }).waitFor({ state: "hidden", timeout });
 }
 
+/** Scrolls until both ends are inside the window, so the mouse never leaves the viewport. */
+async function bringBothIntoView(page: Page, from: Locator, to: Locator): Promise<void> {
+  await from.scrollIntoViewIfNeeded();
+  for (let i = 0; i < 6; i++) {
+    const a = (await from.boundingBox())!;
+    const b = (await to.boundingBox())!;
+    const h = await page.evaluate(() => window.innerHeight);
+    const overflow = Math.max(a.y + a.height, b.y + b.height) - (h - 8);
+    const underflow = Math.min(a.y, b.y) - 8;
+    if (overflow <= 0 && underflow >= 0) return;
+    await page.mouse.move(5, 5);
+    await page.mouse.wheel(0, overflow > 0 ? overflow : underflow);
+    await page.waitForTimeout(50);
+  }
+}
+
 /** A mouse drag in small steps, because the planner listens to pointer events on the document. */
 export async function drag(page: Page, from: Locator, to: Locator): Promise<void> {
-  await from.scrollIntoViewIfNeeded();
+  await bringBothIntoView(page, from, to);
   const a = (await from.boundingBox())!;
   const b = (await to.boundingBox())!;
   await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2);
