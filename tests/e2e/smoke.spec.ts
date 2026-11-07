@@ -1,15 +1,10 @@
-import { mkdtempSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { _electron as electron, expect, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { cleanup, closeAndWait, launch } from "./support/app.ts";
 
-test("the built app opens on an empty data folder and shows the welcome screen", async () => {
-  const dataDir = mkdtempSync(join(tmpdir(), "fm-e2e-"));
-  const app = await electron.launch({ args: [".", `--user-data-dir=${dataDir}`] });
-  try {
-    const page = await app.firstWindow();
-    await expect(page.getByRole("button", { name: "Cargar save" }).first()).toBeVisible();
-  } finally {
-    await app.close();
-  }
+test.afterEach(cleanup);
+
+test("the e2e build opens on an empty data folder and shows the welcome screen", async () => {
+  const { app, page } = await launch();
+  await expect(page.getByRole("button", { name: "Cargar save" }).first()).toBeVisible();
+  await closeAndWait(app);
 });

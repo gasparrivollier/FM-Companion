@@ -2,10 +2,10 @@ import { existsSync } from "node:fs";
 import { basename } from "node:path";
 import { expect, test } from "@playwright/test";
 import { findSampleSave } from "../helpers/sample.ts";
-import { closeAndWait, drag, killLeftovers, launch, loadSave, slot, tableRow } from "./support/app.ts";
+import { closeAndWait, drag, cleanup, launch, loadSave, slot, tableRow } from "./support/app.ts";
 
 const save = findSampleSave();
-test.afterEach(killLeftovers);
+test.afterEach(cleanup);
 
 // Runs against the product build and the owner's private save (saves/*.fm or FM_SAVE); skipped when there is none.
 test("@real the real importer reads the real save and a plan survives close and reopen", async () => {
@@ -14,6 +14,7 @@ test("@real the real importer reads the real save and a plan survives close and 
 
   const first = await launch({ build: "real" });
   await loadSave(first.page, first.app, save!, 180_000);
+  await expect.poll(() => first.page.evaluate(async () => (await (window as any).fm.snapshot.read()) !== null)).toBe(true);
   const counts = await first.page.evaluate(async () => {
     const s = (await (window as any).fm.snapshot.read()) as { squads: Record<string, unknown[]> };
     return { first: s.squads.first.length, reserves: s.squads.reserves.length, u18: s.squads.u18.length };

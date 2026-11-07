@@ -15,7 +15,7 @@ The window is sandboxed (`contextIsolation`, `sandbox`, no Node integration), a 
 
 ## 2. The data folder
 
-`%APPDATA%\FM24 Companion` on Windows (Electron's `userData`).
+`%APPDATA%\fm24-companion` on Windows (Electron's `userData`, named after the package, not the product name).
 
 | File | What | Replaced by |
 |---|---|---|
@@ -65,7 +65,7 @@ The automated tests and the checks on Fedora cannot cover these. Tick them off a
 - [ ] Close the window **right after an edit**, reopen: the edit is there.
 - [ ] Start a load and close the app in the middle, reopen: the squad and your plans are as before.
 - [ ] Load a newer save of the same career: your plans are still there; a player who left is flagged; new players appear.
-- [ ] Uninstall and reinstall: the data is still there (`%APPDATA%\FM24 Companion`).
+- [ ] Uninstall and reinstall: the data is still there (`%APPDATA%\fm24-companion`).
 - [ ] No firewall prompt appears at any point.
 
 ## 6. End-to-end tests
@@ -76,7 +76,7 @@ They drive the real Electron app with Playwright (real window, preload, CSP and 
 |---|---|---|
 | `npm run build:e2e && npm run e2e` | Six scenarios on an *e2e build* (`dist-e2e/`): the product's main, preload and UI, with only the importer replaced by a scripted one that writes an invented squad | nothing private |
 | `npm run build:ui && npm run build:electron && npm run e2e:real` | The product build with the real importer on your save (`saves/*.fm` or `FM_SAVE`); skipped when there is none | your save |
-| `npm run e2e:installer` | Windows only: silent install of `release/FM24 Companion Setup *.exe`, run the installed app on seeded data, uninstall, check the data folder stays | `npm run dist` first |
+| `npm run e2e:installer` | Windows and `CI=1` only (it overwrites the app's real data folder): silent install of `release/FM24 Companion Setup *.exe`, run the installed app on seeded data, uninstall, check the data folder stays | `npm run dist` first |
 
 The Windows workflow runs the first and the third after building the installer and keeps `test-results/` as an artifact.
 

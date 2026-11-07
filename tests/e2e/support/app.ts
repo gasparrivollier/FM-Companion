@@ -2,7 +2,7 @@
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { _electron as electron, type ElectronApplication, type Locator, type Page } from "@playwright/test";
+import { _electron as electron, type ElectronApplication, type Locator, type Page, type TestInfo } from "@playwright/test";
 
 export interface Launched { app: ElectronApplication; page: Page; dataDir: string }
 const open = new Set<ElectronApplication>();
@@ -21,17 +21,26 @@ export async function launch(opts: { dataDir?: string; build?: "e2e" | "real"; e
 }
 
 /** Closes the way a person does (the window's close button), so the before-close flush really runs, and waits for the process to exit. */
-export async function closeAndWait(app: ElectronApplication): Promise<void> {
+export async function closeAndWait(app: ElectronApplication): Promise<number> {
+  const t0 = Date.now();
   const proc = app.process();
   const exited = new Promise<void>((res) => proc.once("exit", () => res()));
   await app.evaluate(({ BrowserWindow }) => { BrowserWindow.getAllWindows()[0].close(); });
   await exited;
   open.delete(app);
+  return Date.now() - t0;
 }
 
-/** For afterEach: kill anything a failed test left behind. */
-export async function killLeftovers(): Promise<void> {
-  for (const app of open) { try { await app.close(); } catch { /* already gone */ } }
+/** For afterEach: on failure keep a screenshot of every open window, then kill anything the test left behind. */
+// eslint-disable-next-line no-empty-pattern -- Playwright requires a destructuring pattern as the first argument
+export async function cleanup({}: object, testInfo: TestInfo): Promise<void> {
+  let n = 0;
+  for (const app of open) {
+    if (testInfo.status !== testInfo.expectedStatus) {
+      try { await (await app.firstWindow()).screenshot({ path: testInfo.outputPath(`failure-${n++}.png`) }); } catch { /* window already gone */ }
+    }
+    try { await app.close(); } catch { /* already gone */ }
+  }
   open.clear();
 }
 
@@ -50,7 +59,10 @@ export function writeFakeSave(dir: string, spec: { squad: "A" | "B"; hang?: bool
 export async function loadSave(page: Page, app: ElectronApplication, savePath: string, timeout = 30_000): Promise<void> {
   await stubPickSave(app, savePath);
   await page.getByRole("button", { name: "Cargar save" }).first().click();
-  await page.getByRole("dialog", { name: "Importando el save" }).waitFor({ state: "hidden", timeout });
+  // the dialog opens after the dialog IPC round-trip; a very fast import may close it again before we see it
+  const dialog = page.getByRole("dialog", { name: "Importando el save" });
+  await dialog.waitFor({ state: "visible", timeout: 5_000 }).catch(() => {});
+  await dialog.waitFor({ state: "hidden", timeout });
 }
 
 /** Scrolls until both ends are inside the window, so the mouse never leaves the viewport. */

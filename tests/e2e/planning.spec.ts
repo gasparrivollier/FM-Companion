@@ -1,10 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { closeAndWait, drag, killLeftovers, launch, loadSave, slot, tableRow, writeFakeSave } from "./support/app.ts";
+import { closeAndWait, drag, cleanup, launch, loadSave, slot, tableRow, writeFakeSave } from "./support/app.ts";
 
-test.afterEach(killLeftovers);
+test.afterEach(cleanup);
 
 test("first launch: load a save and see the squad", async () => {
   const { app, page, dataDir } = await launch();
+  await expect(page.getByRole("button", { name: "Cargar save" }).first()).toBeVisible();
   await expect(page.getByText("Jugador Uno")).toHaveCount(0);
   await loadSave(page, app, writeFakeSave(dataDir, { squad: "A" }));
   await expect(tableRow(page, "Jugador Uno")).toBeVisible();
@@ -34,7 +35,7 @@ test("drag a table row onto a pitch slot, move a token, change formation and cur
   await page.mouse.move(tok.x + tok.width / 2 + 10, tok.y + tok.height / 2 + 10, { steps: 3 });
   await page.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.5, { steps: 10 });
   await page.mouse.up();
-  expect(await posOf()).not.toEqual(posBefore);
+  await expect.poll(posOf).not.toEqual(posBefore);
 
   const before = await page.locator("button[data-slot]").evaluateAll((els) => els.map((e) => e.getAttribute("aria-label")));
   await page.getByRole("button", { name: "4-4-2" }).click();

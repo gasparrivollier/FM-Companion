@@ -1,16 +1,19 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test } from "@playwright/test";
-import { closeAndWait, drag, killLeftovers, launch, loadSave, slot, stubPickSave, tableRow, writeFakeSave } from "./support/app.ts";
+import { closeAndWait, drag, cleanup, launch, loadSave, slot, stubPickSave, tableRow, writeFakeSave } from "./support/app.ts";
 
-test.afterEach(killLeftovers);
+test.afterEach(cleanup);
 
 test("an edit made right before closing is there after reopening", async () => {
   const first = await launch();
   await loadSave(first.page, first.app, writeFakeSave(first.dataDir, { squad: "A" }));
   await drag(first.page, tableRow(first.page, "Jugador Uno"), slot(first.page, 0));
   await expect(slot(first.page, 0)).toHaveAttribute("aria-label", /Jugador Uno/);
-  await closeAndWait(first.app); // no wait for the debounce: the close handshake must flush
+  // the debounce (300 ms) must not have won the race, or this would not exercise the flush on close
+  expect(existsSync(join(first.dataDir, "owner.json")), "debounce wrote before the close: slow runner").toBe(false);
+  const ms = await closeAndWait(first.app); // the close handshake must flush and be acknowledged
+  expect(ms, "close took the 1.5 s timeout: the renderer never acknowledged the flush").toBeLessThan(1200);
 
   expect(readFileSync(join(first.dataDir, "owner.json"), "utf8")).toContain("9001");
   const second = await launch({ dataDir: first.dataDir });
@@ -58,7 +61,7 @@ test("importing a different squad keeps the plans, flags who left and shows who 
 
 test("a corrupt owner.json is explained and never rewritten", async () => {
   const dir = (await launch()).dataDir;
-  await killLeftovers();
+  await cleanup({}, test.info());
   const bad = "{not json";
   writeFileSync(join(dir, "owner.json"), bad);
   const { app, page } = await launch({ dataDir: dir });

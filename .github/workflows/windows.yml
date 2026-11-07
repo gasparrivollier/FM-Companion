@@ -31,8 +31,11 @@ jobs:
           path: release/*.exe
           if-no-files-found: error
       - run: npm run build:e2e
-      - run: npm run e2e
-      - run: npm run e2e:installer
+      # each step keeps its own output folder (Playwright empties its output folder at start), and the
+      # installer test runs even when the first e2e step failed
+      - run: npm run e2e -- --output=test-results/e2e
+      - if: ${{ !cancelled() }}
+        run: npm run e2e:installer -- --output=test-results/installer
       - uses: actions/upload-artifact@v4
         if: always()
         with:
