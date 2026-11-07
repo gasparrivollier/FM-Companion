@@ -18,6 +18,7 @@ FM24 Companion is a squad and tactics planner for Football Manager 24. The user 
 | 06 | [Mockup to save mapping](06-mockup-to-save-mapping.md) | For each mockup feature: available, derivable, partial or missing |
 | 07 | [Reproduction](07-reproduction.md) | The tools, the one-command pipeline, requirements and performance |
 | 08 | [Limits and open questions](08-limits-and-open-questions.md) | What is not known, what is fragile, what we decided not to chase |
+| 09 | [Distribution](09-distribution.md) | The desktop app: processes, the data folder, building the installer, the Windows check list, the open `uid` item |
 | log | [research/](research/) | The chronological working notes (`fm24-save-files.md` has 23 numbered sections); kept as evidence, superseded by 02 to 08 for reference |
 
 ## Confidence labels used everywhere
@@ -67,6 +68,9 @@ tools/                   extraction tools and ground-truth files (see 07)
 src/importer/            the save importer (writes the snapshot)
 src/planner/             the planner UI: domain/ (pure logic), state/ (reducer, storage seams), ui/ (React)
 src/shared/              the snapshot contract
+src/electron/            the desktop shell: main process, preload, importer runner, file layer
+scripts/                 esbuild bundling and the Electron dev launcher
+.github/workflows/       the Windows installer build
 tests/                   Vitest tests (integration tests skip without a save in saves/)
 docs/superpowers/        design spec and implementation plans
 saves/                   your save games (git-ignored, private)
