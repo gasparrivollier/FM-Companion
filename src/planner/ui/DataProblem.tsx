@@ -20,7 +20,7 @@ export function DataProblem({ message, tools, onContinue }: { message: string; t
       <div className="panel" role="alert" style={{ flex: "1 1 100%" }}>
         <h1 className="tname">No se pueden cargar tus datos</h1>
         <p>{message}</p>
-        <p className="small muted">La app no escribió nada: tu archivo sigue como estaba.</p>
+        <p className="small muted">La app no escribió nada: tu archivo sigue como estaba. Si existe <code>owner.json.bak</code> en la carpeta de datos, es la última copia buena; al empezar de cero también se guarda aparte.</p>
         {error && <p className="small warnx">{error}</p>}
         {tools && step === "idle" && (
           <div className="row2">

@@ -79,6 +79,24 @@ describe("welcome and import", () => {
   });
 });
 
+describe("a snapshot that cannot be used", () => {
+  it("offers Cargar save on the error screen so the user can import again", async () => {
+    const h = fakeFm({ snapshot: { garbage: true } });
+    h.s.startImpl = async () => { h.s.snapshot = snapA(); return { ok: true, warnings: [] }; };
+    mount(h);
+    expect(await screen.findByText(/no tiene el formato esperado/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Cargar save" }));
+    expect(await tab()).toBeTruthy();
+    expect(h.s.writes).toEqual([]);
+  });
+  it("also when the snapshot file cannot be read at all", async () => {
+    const h = fakeFm({ snapshot: new Error("Unexpected end of JSON input") });
+    mount(h);
+    expect(await screen.findByText(/Unexpected end of JSON input/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Cargar save" })).toBeTruthy();
+  });
+});
+
 describe("data problems", () => {
   it("refuses a newer file, offers the folder, and asks before resetting", async () => {
     const h = fakeFm({ owner: JSON.stringify({ version: 2 }), snapshot: snapA() });

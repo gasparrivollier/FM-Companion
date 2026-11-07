@@ -72,6 +72,20 @@ describe("ownerFile", () => {
     expect(() => f.backupAndReset(new Date(2026, 10, 7, 22, 15, 30))).toThrow();
     expect(readFileSync(join(d, "owner.json"), "utf8")).toBe("{broken");
   });
+  it("a reset keeps the last good document too: the .bak is not lost to the next writes", () => {
+    const d = dir();
+    const f = ownerFile(d);
+    f.write(good("A"));
+    f.write(good("B")); // .bak = A
+    writeFileSync(join(d, "owner.json"), ""); // damaged outside the app
+    const { backupPath } = f.backupAndReset(new Date(2026, 10, 7, 22, 15, 30));
+    f.write(good("fresh1"));
+    f.write(good("fresh2")); // .bak is now fresh data
+    expect(readFileSync(join(d, "owner.json.bak"), "utf8")).toBe(good("fresh1"));
+    const kept = readdirSync(d).filter((n) => n.startsWith("owner-backup-")).map((n) => readFileSync(join(d, n), "utf8"));
+    expect(kept).toContain(good("A"));
+    expect(backupPath).toContain("owner-backup-20261107-221530");
+  });
   it("works in a folder with spaces and accents", () => {
     const d = join(dir("fm files "), "Gaspar Rivollier Canadá");
     const f = ownerFile(d);

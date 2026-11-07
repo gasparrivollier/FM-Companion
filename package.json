@@ -2,9 +2,6 @@
   "name": "fm24-companion",
   "version": "0.1.0",
   "description": "FM24 Companion",
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
     "test": "node --max-old-space-size=4096 node_modules/vitest/vitest.mjs run",
     "typecheck": "tsc --noEmit",
@@ -15,7 +12,7 @@
     "build:electron": "node scripts/build-electron.mjs",
     "electron:smoke": "node scripts/build-electron.mjs && electron . --smoke",
     "electron:dev": "node scripts/electron-dev.mjs",
-    "dist": "npm run build:ui && npm run build:electron && electron-builder --win nsis",
+    "dist": "npm run build:ui && npm run build:electron && electron-builder --win nsis --publish never",
     "electron:smoke-ui": "npm run build:ui && node scripts/build-electron.mjs && electron . --smoke-ui"
   },
   "private": true,

@@ -10,7 +10,8 @@ import { createCloseGate, importerOptions, registerIpc } from "./ipc.ts";
 import { runSmoke } from "./smoke.ts";
 
 declare const __dirname: string;
-const DEV_URL = process.env.ELECTRON_DEV_URL;
+// only honoured in development: a packaged app must never be pointed at another page or lose its CSP
+const DEV_URL = app.isPackaged ? undefined : process.env.ELECTRON_DEV_URL;
 
 function savesFolder(): string | undefined {
   const p = join(app.getPath("documents"), "Sports Interactive", "Football Manager 2024", "games");
@@ -54,8 +55,8 @@ function start(hidden = false): BrowserWindow {
   hardenWindow(win, appUrl);
   let closing = false;
   win.on("close", (e) => {
+    e.preventDefault(); // a second click while the flush is pending must not close early
     if (closing) return;
-    e.preventDefault();
     closing = true;
     runner.cancel();
     void gate.request().then(() => win?.destroy());

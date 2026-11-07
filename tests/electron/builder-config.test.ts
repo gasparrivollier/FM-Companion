@@ -35,6 +35,11 @@ describe("electron-builder.yml", () => {
     expect(pkg.main).toBe("dist-electron/main.cjs");
     expect(pkg.scripts.dist).toContain("electron-builder --win nsis");
     expect(pkg.license).toBe("GPL-3.0-only");
+    // electron-builder 26 rejects a root "directories" field in package.json
+    expect(pkg.directories).toBeUndefined();
+  });
+  it("never publishes from the dist script, not even on a tag", () => {
+    expect(pkg.scripts.dist).toContain("--publish never");
   });
 });
 

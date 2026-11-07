@@ -59,6 +59,8 @@ export function ownerFile(dir: string): OwnerFile {
       if (!existsSync(path)) throw new Error("NO_OWNER_FILE");
       const backupPath = join(dir, `owner-backup-${stamp(now)}.json`);
       copyFileSync(path, backupPath);
+      // the last good copy must survive the new data's first writes, which would otherwise overwrite owner.json.bak
+      if (existsSync(path + ".bak")) copyFileSync(path + ".bak", join(dir, `owner-backup-${stamp(now)}.previous-good.json`));
       unlinkSync(path);
       return { backupPath };
     },
