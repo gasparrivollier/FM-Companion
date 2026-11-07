@@ -67,3 +67,21 @@ The automated tests and the checks on Fedora cannot cover these. Tick them off a
 - [ ] Load a newer save of the same career: your plans are still there; a player who left is flagged; new players appear.
 - [ ] Uninstall and reinstall: the data is still there (`%APPDATA%\FM24 Companion`).
 - [ ] No firewall prompt appears at any point.
+
+## 6. End-to-end tests
+
+They drive the real Electron app with Playwright (real window, preload, CSP and importer child process). Design: `docs/superpowers/specs/2026-11-07-e2e-design.md`.
+
+| Command | What it runs | Needs |
+|---|---|---|
+| `npm run build:e2e && npm run e2e` | Six scenarios on an *e2e build* (`dist-e2e/`): the product's main, preload and UI, with only the importer replaced by a scripted one that writes an invented squad | nothing private |
+| `npm run build:ui && npm run build:electron && npm run e2e:real` | The product build with the real importer on your save (`saves/*.fm` or `FM_SAVE`); skipped when there is none | your save |
+| `npm run e2e:installer` | Windows only: silent install of `release/FM24 Companion Setup *.exe`, run the installed app on seeded data, uninstall, check the data folder stays | `npm run dist` first |
+
+The Windows workflow runs the first and the third after building the installer and keeps `test-results/` as an artifact.
+
+What the scenarios cover: load a squad; drag a row onto the pitch and a token around it; change formation and currency; close right after an edit and reopen; cancel an import half way (both files byte-identical); import a different squad (plans kept, leaver flagged, newcomer unassigned); a corrupt `owner.json` (explained, never rewritten).
+
+Each scenario uses its own data folder (`--user-data-dir`). The installer scenario is the only one that uses the real `%APPDATA%`, and it runs on the CI runner.
+
+What they do not cover: importing your real save on Windows (the `e2e:real` run is local), the SmartScreen warning, and the visual look. If a pointer drag proves unstable on a runner, that test is marked `test.fixme` with the reason, not weakened.

@@ -37,4 +37,5 @@ Process skills come first, since they set the approach. Implementation skills fo
 - The TypeScript importer is in `src/importer/` (`npm run import -- "saves/<save>.fm" out/snapshot.json`, `npm test`). Plan: `docs/superpowers/plans/`.
 - The planner UI is in `src/planner/` (`npm run dev` serves it and reads `out/snapshot.json`; domain logic is pure TypeScript under `src/planner/domain/`). Plan: `docs/superpowers/plans/`.
 - The desktop shell is in `src/electron/` (`npm run electron:dev`, `npm run electron:smoke -- "saves/<save>.fm"`, `npm run electron:smoke-ui`). The Windows installer is built by `.github/workflows/windows.yml` (`npm run dist` needs Windows). Docs: `docs/09-distribution.md`. Plan: `docs/superpowers/plans/`.
+- End-to-end tests are in `tests/e2e/` (`npm run build:e2e && npm run e2e`; `e2e:real` needs a save; `e2e:installer` is Windows only). They use an e2e build with a scripted importer, never a backdoor in `src/`. See `docs/09-distribution.md` section 6.
 - Match players by `uid` or `id`, never by displayed name. The save is the only input source.
