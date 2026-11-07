@@ -59,7 +59,8 @@ describe("windows workflow", () => {
     }
     expect(wf.indexOf("npm run e2e:installer")).toBeGreaterThan(wf.indexOf("npm run e2e --"));
     // the installer test must still run when the first e2e step failed
-    expect(wf).toMatch(/if:\s*\$\{\{\s*!cancelled\(\)\s*\}\}\s*\n\s*run: npm run e2e:installer/);
+    // ...but only when the installer exists, so a broken build is not hidden behind a missing-file error
+    expect(wf).toMatch(/if:\s*\$\{\{\s*!cancelled\(\)\s*&&\s*hashFiles\('release\/\*\.exe'\)\s*!=\s*''\s*\}\}\s*\n\s*run: npm run e2e:installer/);
     expect(wf).toMatch(/if:\s*always\(\)/);
     expect(wf).toContain("test-results");
   });
