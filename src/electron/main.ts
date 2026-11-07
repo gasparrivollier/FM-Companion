@@ -6,6 +6,7 @@ import { app, BrowserWindow, dialog, ipcMain, session, shell } from "electron";
 import { cspHeader, hardenWindow } from "./hardening.ts";
 import { createImportRunner } from "./importRunner.ts";
 import { createCloseGate, importerOptions, registerIpc } from "./ipc.ts";
+import { runSmoke } from "./smoke.ts";
 
 declare const __dirname: string;
 const DEV_URL = process.env.ELECTRON_DEV_URL;
@@ -62,7 +63,16 @@ function start() {
   void win.loadURL(appUrl);
 }
 
-if (!app.requestSingleInstanceLock()) {
+const smoke = process.argv.indexOf("--smoke");
+if (smoke >= 0) {
+  // no window: import a save with the real runner, print one JSON line, exit
+  void app.whenReady().then(async () => {
+    const save = process.argv[smoke + 1];
+    const r = save ? await runSmoke(save, join(__dirname, "importer.cjs")) : { code: 2, line: JSON.stringify({ ok: false, message: "usage: --smoke <save.fm>" }) };
+    process.stdout.write(r.line + "\n");
+    app.exit(r.code);
+  });
+} else if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
   app.on("second-instance", () => {
