@@ -24,3 +24,12 @@ export function makeState(over: Partial<PlannerState> = {}, data: OwnerData = de
   const players = specs.map(([uid, r, sq]) => buildPlayer(snapPlayer(uid, r), sq, data.marks[uid]));
   return { ...initialState(data, players, "2025-04-06", { id: 1, nationOrdinal: 1, name: "C" }, []), ...over };
 }
+
+import { SNAPSHOT_VERSION, type Snapshot } from "../../src/shared/snapshot.ts";
+export function snapshotOf(first: SnapshotPlayer[], gameDate = "2025-04-06", warnings: string[] = []): Snapshot {
+  return {
+    version: SNAPSHOT_VERSION,
+    meta: { saveFileName: "x.fm", gameVersion: "24.3.0+0", gameDate, importedAt: "now", importerVersion: "1", club: { id: 1, uid: 2, name: "Club Test", nationOrdinal: 1 } },
+    squads: { first, reserves: [], u18: [] }, warnings,
+  };
+}
