@@ -9,3 +9,6 @@ dist/
 .superpowers/
 dist-electron/
 release/
+dist-e2e/
+test-results/
+playwright-report/
