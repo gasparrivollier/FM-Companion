@@ -55,8 +55,10 @@ export function proposePositions(ratings: Record<PositionCode, number>): { natur
   const ordered = POS_LIST.filter((p) => byPos.has(p));
   let natural = ordered.filter((p) => byPos.get(p) === 20);
   if (!natural.length) {
-    const best = ordered.reduce((a, b) => ((byPos.get(b) ?? 0) > (byPos.get(a) ?? 0) ? b : a));
-    natural = [best];
+    // nothing at 20: the best mapped position; a sweeper (or a rating set with no mapped position) becomes a centre-back
+    const best = ordered.reduce<Pos | null>((a, b) => (a === null || (byPos.get(b) ?? 0) > (byPos.get(a) ?? 0) ? b : a), null);
+    const sweeper = ratings.SW ?? 0;
+    natural = best === null || sweeper > (byPos.get(best) ?? 0) ? ["DFC"] : [best];
   }
   const covers = ordered.filter((p) => !natural.includes(p) && (byPos.get(p) ?? 0) >= 15);
   return { natural, covers };

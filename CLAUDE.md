@@ -36,4 +36,5 @@ Process skills come first, since they set the approach. Implementation skills fo
 - Research tooling is in `tools/` (`tools/prepare.sh "saves/<save>.fm"` regenerates everything). `saves/`, `out/` and `vendor/` are git-ignored and must never be committed.
 - The TypeScript importer is in `src/importer/` (`npm run import -- "saves/<save>.fm" out/snapshot.json`, `npm test`). Plan: `docs/superpowers/plans/`.
 - The planner UI is in `src/planner/` (`npm run dev` serves it and reads `out/snapshot.json`; domain logic is pure TypeScript under `src/planner/domain/`). Plan: `docs/superpowers/plans/`.
+- The desktop shell is in `src/electron/` (`npm run electron:dev`, `npm run electron:smoke -- "saves/<save>.fm"`, `npm run electron:smoke-ui`). The Windows installer is built by `.github/workflows/windows.yml` (`npm run dist` needs Windows). Docs: `docs/09-distribution.md`. Plan: `docs/superpowers/plans/`.
 - Match players by `uid` or `id`, never by displayed name. The save is the only input source.

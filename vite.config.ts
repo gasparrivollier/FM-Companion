@@ -18,4 +18,5 @@ function devSnapshot(): Plugin {
   };
 }
 
-export default defineConfig({ plugins: [react(), devSnapshot()] });
+// base "./": the packaged app loads index.html from a file:// URL, so assets must be relative
+export default defineConfig({ base: "./", plugins: [react(), devSnapshot()] });

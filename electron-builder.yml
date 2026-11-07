@@ -1,0 +1,28 @@
+# Windows installer: NSIS only (an .exe), per user, not signed. Built on a Windows runner (see .github/workflows/windows.yml).
+appId: io.github.gasparrivollier.fm24companion
+productName: FM24 Companion
+directories:
+  output: release
+files:
+  - dist/**
+  - dist-electron/**
+  - package.json
+  - "!saves/**"
+  - "!out/**"
+  - "!**/*.fm"
+# the importer runs as its own process, which cannot read from inside app.asar
+asarUnpack:
+  - dist-electron/importer.cjs
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  signAndEditExecutable: false
+nsis:
+  oneClick: true
+  perMachine: false
+  # uninstalling must never delete the owner's plans
+  deleteAppDataOnUninstall: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true

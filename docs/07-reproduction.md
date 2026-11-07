@@ -120,3 +120,6 @@ npm test                                                     # unit tests; integ
 
 On the sample save the whole run takes about 30 seconds and the output passes `isSnapshot`. The importer opens the save read-only (its size, modification time and SHA-256 are checked unchanged in `tests/importer/run.test.ts`). `src/importer/savelens/SOURCE.md` records the pinned parser.
 
+## 9. The desktop app
+
+The importer also runs inside the installed app, as a child process with Electron's own Node. `npm run electron:smoke -- "saves/<save>.fm"` runs exactly that path on a save and prints the counts (Aberdeen sample: 31, 5 and 33 players, about 20 seconds). See [09](09-distribution.md).

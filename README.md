@@ -2,7 +2,7 @@
 
 A squad and tactics planner for Football Manager 24, for Windows. It reads your `.fm` save game and lets you lay out an XI, plan depth per position, and look ahead at ageing and expiring contracts for the current and the next two seasons.
 
-**Status: work in progress.** The save importer is done and tested. The planner UI and the Electron shell with the Windows installer are planned (see `docs/superpowers/plans/`). There is nothing to download yet.
+**Status: work in progress.** The save importer, the planner UI and the Electron desktop app are built and tested on Linux, and a GitHub Actions workflow builds the Windows installer. The installer itself has **not yet been run on Windows**: see the check list in [`docs/09-distribution.md`](docs/09-distribution.md). There is no released download yet.
 
 ## Principles
 
@@ -12,6 +12,18 @@ A squad and tactics planner for Football Manager 24, for Windows. It reads your 
 - The interface is in Spanish.
 
 ## What works today
+
+A desktop app (Electron) with the planner from the prototype: load a save, lay out an XI, plan depth per position over three seasons, and keep your own data across newer saves. For development:
+
+```bash
+npm install
+npm run electron:dev        # Vite + Electron
+npm run electron:smoke -- "path/to/your save.fm"   # import a save inside Electron, print the counts
+npm run dev                 # planner in a plain browser, reading out/snapshot.json
+```
+
+The importer on its own:
+
 
 The importer reads an FM24 save (build `24.3.0+0`, Zstandard container) and writes a versioned JSON snapshot of the managed club's three squads (first team, Reservas, Sub-18): identity, position familiarity, CA/PA, attributes, contract (wage, end, squad number, squad status) and the raw home-grown relations.
 
