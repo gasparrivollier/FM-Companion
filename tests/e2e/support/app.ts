@@ -4,6 +4,14 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { _electron as electron, type ElectronApplication, type Locator, type Page, type TestInfo } from "@playwright/test";
 
+export const VIEWPORT = { width: 1440, height: 1000 };
+
+/** The page area the tests rely on, whatever the screen: a CI runner's desktop can be smaller than the window. */
+export async function fixViewport(page: Page): Promise<void> {
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send("Emulation.setDeviceMetricsOverride", { ...VIEWPORT, deviceScaleFactor: 1, mobile: false });
+}
+
 export interface Launched { app: ElectronApplication; page: Page; dataDir: string }
 const open = new Set<ElectronApplication>();
 
@@ -17,6 +25,7 @@ export async function launch(opts: { dataDir?: string; build?: "e2e" | "real"; e
     : await electron.launch({ args: [resolve(opts.build === "real" ? "." : "dist-e2e"), ...dataArgs] });
   open.add(app);
   const page = await app.firstWindow();
+  await fixViewport(page);
   return { app, page, dataDir };
 }
 
@@ -79,6 +88,10 @@ async function bringBothIntoView(page: Page, from: Locator, to: Locator): Promis
     await page.mouse.wheel(0, overflow > 0 ? overflow : underflow);
     await page.waitForTimeout(50);
   }
+  const a = (await from.boundingBox())!;
+  const b = (await to.boundingBox())!;
+  const vp = await page.evaluate(() => [window.innerWidth, window.innerHeight]);
+  throw new Error(`drag: source and target do not fit in the window together (viewport ${vp.join("x")}, source y=${a.y} h=${a.height}, target y=${b.y} h=${b.height})`);
 }
 
 /** A mouse drag in small steps, because the planner listens to pointer events on the document. */
