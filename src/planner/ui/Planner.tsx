@@ -1,4 +1,5 @@
 import { useEffect, useReducer, useRef, useState } from "react";
+import type { FmApi } from "../../electron/api.ts";
 import type { Snapshot } from "../../shared/snapshot.ts";
 import { inkOn, liftOn } from "../domain/colors.ts";
 import { reduce, type PlannerState } from "../state/reducer.ts";
@@ -21,10 +22,14 @@ const defaultId = () => "c" + Date.now().toString(36) + Math.random().toString(3
 
 export interface PlannerProps {
   initial: PlannerState; snapshot: Snapshot; storage: OwnerStorage; newId?: () => string; onLoadSave?: () => void;
+  /** A newer snapshot to apply to the running planner (edits made since opening are kept). */
+  incoming?: Snapshot;
+  lifecycle?: FmApi["lifecycle"];
 }
 
-export function Planner({ initial, snapshot, storage, newId = defaultId, onLoadSave }: PlannerProps) {
+export function Planner({ initial, snapshot, storage, newId = defaultId, onLoadSave, incoming, lifecycle }: PlannerProps) {
   const [state, dispatch] = useReducer(reduce, initial);
+  const [snap, setSnap] = useState(snapshot);
   const [dismissed, setDismissed] = useState(false);
   const [settings, setSettings] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -58,6 +63,14 @@ export function Planner({ initial, snapshot, storage, newId = defaultId, onLoadS
     return () => { window.removeEventListener("pagehide", flushOnHide); flush(); };
   }, []);
 
+  useEffect(() => {
+    if (!incoming) return;
+    dispatch({ type: "loadSnapshot", snapshot: incoming });
+    setSnap(incoming);
+    setDismissed(false);
+  }, [incoming]);
+  useEffect(() => lifecycle?.onBeforeClose(() => { flushOnHide(); lifecycle.ack(); }), [lifecycle]);
+
   const { c2 } = state.data.settings;
   const dnd = useRowDrag((uid, t) => {
     if (t.band !== null && state.sel !== null) dispatch({ type: "pick", uid, band: t.band });
@@ -68,9 +81,9 @@ export function Planner({ initial, snapshot, storage, newId = defaultId, onLoadS
   return (
     <div className="app" style={{ ["--acc" as string]: c2, ["--acc-ink" as string]: inkOn(c2), ["--accl" as string]: liftOn(c2) }}>
       <Header state={state} onSettings={() => setSettings(true)} onLoadSave={onLoadSave} />
-      {snapshot.warnings.length > 0 && !dismissed && (
+      {snap.warnings.length > 0 && !dismissed && (
         <div className="panel" role="status" style={{ flex: "1 1 100%" }}>
-          <ul>{snapshot.warnings.map((w) => <li key={w}>{w}</li>)}</ul>
+          <ul>{snap.warnings.map((w) => <li key={w}>{w}</li>)}</ul>
           <button type="button" className="btn" style={{ alignSelf: "flex-start" }} onClick={() => setDismissed(true)}>Cerrar aviso</button>
         </div>
       )}

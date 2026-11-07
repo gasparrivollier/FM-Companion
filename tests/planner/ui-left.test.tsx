@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { inkOn } from "../../src/planner/domain/colors.ts";
 import { defaultOwnerData, type OwnerData } from "../../src/planner/domain/ownerData.ts";
 import { blankSlots, PRESETS } from "../../src/planner/domain/tactics.ts";
-import { memoryStorage, type OwnerStorage } from "../../src/planner/state/storage.ts";
+import { memoryStorage, type ImporterPort, type OwnerStorage } from "../../src/planner/state/storage.ts";
 import { App } from "../../src/planner/ui/App.tsx";
 import { snapPlayer, snapshotOf } from "../helpers/planner.ts";
 
@@ -17,9 +17,9 @@ const spy = (data?: OwnerData): OwnerStorage & { write: ReturnType<typeof vi.fn>
   const inner = memoryStorage(data ? JSON.stringify(data) : undefined);
   return { read: () => inner.read(), write: vi.fn((t: string) => inner.write(t)) };
 };
-async function open(opts: { data?: OwnerData; date?: string; onLoadSave?: () => void } = {}) {
+async function open(opts: { data?: OwnerData; date?: string; importer?: ImporterPort } = {}) {
   const storage = spy(opts.data);
-  render(<App source={{ load: async () => snapshotOf(squad(), opts.date ?? "2025-04-06") }} storage={storage} onLoadSave={opts.onLoadSave} />);
+  render(<App source={{ load: async () => snapshotOf(squad(), opts.date ?? "2025-04-06") }} storage={storage} importer={opts.importer} />);
   await screen.findByRole("group", { name: "Temporada del plan" });
   return storage;
 }
@@ -54,10 +54,10 @@ describe("header and seasons", () => {
     expect(screen.getByRole("heading", { name: "Mi equipo" })).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Cargar save" })).toBeNull();
     cleanup();
-    const onLoadSave = vi.fn();
-    await open({ onLoadSave });
+    const pickSave = vi.fn(async () => null);
+    await open({ importer: { pickSave, start: vi.fn(), cancel: vi.fn(), onProgress: () => () => {} } });
     fireEvent.click(screen.getByRole("button", { name: "Cargar save" }));
-    expect(onLoadSave).toHaveBeenCalledOnce();
+    await waitFor(() => expect(pickSave).toHaveBeenCalledOnce());
   });
   it("asks for confirmation before emptying the XI", async () => {
     await open({ data: withPlan((s) => { s[2].uid = 2; }) });
