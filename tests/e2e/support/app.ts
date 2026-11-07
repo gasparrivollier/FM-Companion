@@ -58,7 +58,7 @@ export async function stubPickSave(app: ElectronApplication, path: string): Prom
   await app.evaluate(({ dialog }, p) => { dialog.showOpenDialog = (async () => ({ canceled: false, filePaths: [p] })) as typeof dialog.showOpenDialog; }, path);
 }
 
-export function writeFakeSave(dir: string, spec: { squad: "A" | "B"; hang?: boolean }, name = "save.fm"): string {
+export function writeFakeSave(dir: string, spec: { squad: "A" | "B"; hang?: boolean; warnings?: string[] }, name = "save.fm"): string {
   const p = join(dir, name);
   writeFileSync(p, JSON.stringify(spec));
   return p;

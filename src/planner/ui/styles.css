@@ -13,12 +13,12 @@ button:disabled{cursor:default}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #f2b84b;outline-offset:2px}
 ::placeholder{color:#7f9288}
 .app{min-height:100vh;padding:20px;display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
-.top{flex:1 1 100%;border-radius:12px;overflow:hidden;border:1px solid #2a3631}
+.top{flex:1 1 100%;border-radius:12px;border:1px solid #2a3631}
 .tbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:16px 20px}
 .tname{margin:0;font:700 32px/1.1 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase}
 .tsub{font-size:14px}
 .tbtn{min-height:40px;padding:0 14px;border-radius:8px;border:1.5px solid currentColor;background:transparent;color:inherit;font-weight:500;display:inline-flex;align-items:center;cursor:pointer;white-space:nowrap}
-.stripe{height:8px}
+.stripe{height:8px;border-radius:0 0 11px 11px}
 .seasons{flex:1 1 100%;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:-6px}
 .stabs{display:flex;flex-wrap:wrap;gap:6px}
 .stab{min-height:42px;padding:0 16px;border-radius:8px;border:1px solid #3a4c43;background:#1c2621;font-weight:500;display:inline-flex;align-items:baseline;gap:8px;align-items:center}
@@ -189,3 +189,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .app.onescreen{position:relative}
 .panel.grow{overflow:auto}
 .onescreen .right>.panel:last-child{max-height:45%;overflow:auto}
+.notif .tbtn{gap:8px;padding:0 12px}
+.nbadge{min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#f2b84b;color:#1a1305;font:700 13px/20px 'Barlow Condensed',sans-serif;text-align:center}
+.npop{position:absolute;z-index:12;right:0;top:calc(100% + 8px);width:min(420px,80vw);max-height:50vh;overflow:auto;background:#151c19;color:#e9efeb;border:1px solid #3a4c43;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 12px 30px rgba(0,0,0,.45)}
+.npop ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}

@@ -30,7 +30,6 @@ export interface PlannerProps {
 export function Planner({ initial, snapshot, storage, newId = defaultId, onLoadSave, incoming, lifecycle }: PlannerProps) {
   const [state, dispatch] = useReducer(reduce, initial);
   const [snap, setSnap] = useState(snapshot);
-  const [dismissed, setDismissed] = useState(false);
   const [settings, setSettings] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const pending = useRef<string | null>(null);
@@ -67,7 +66,6 @@ export function Planner({ initial, snapshot, storage, newId = defaultId, onLoadS
     if (!incoming) return;
     dispatch({ type: "loadSnapshot", snapshot: incoming });
     setSnap(incoming);
-    setDismissed(false);
   }, [incoming]);
   useEffect(() => lifecycle?.onBeforeClose(() => { flushOnHide(); lifecycle.ack(); }), [lifecycle]);
 
@@ -80,13 +78,7 @@ export function Planner({ initial, snapshot, storage, newId = defaultId, onLoadS
   const dragged = dnd.drag ? state.players.find((p) => p.uid === dnd.drag!.uid) : undefined;
   return (
     <div className="app onescreen" style={{ ["--acc" as string]: c2, ["--acc-ink" as string]: inkOn(c2), ["--accl" as string]: liftOn(c2) }}>
-      <Header state={state} onSettings={() => setSettings(true)} onLoadSave={onLoadSave} />
-      {snap.warnings.length > 0 && !dismissed && (
-        <div className="panel" role="status">
-          <ul>{snap.warnings.map((w) => <li key={w}>{w}</li>)}</ul>
-          <button type="button" className="btn" style={{ alignSelf: "flex-start" }} onClick={() => setDismissed(true)}>Cerrar aviso</button>
-        </div>
-      )}
+      <Header state={state} warnings={snap.warnings} onSettings={() => setSettings(true)} onLoadSave={onLoadSave} />
       {saveError && <div className="panel" role="alert">No se pudieron guardar los datos propios: {saveError}</div>}
       <SeasonTabs state={state} dispatch={dispatch} />
       <div className="cols">

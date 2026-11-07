@@ -55,3 +55,25 @@ test("the slot editor and the player detail scroll inside their panels instead o
   expect(styles).toEqual([{ l: "Rol y jugador para el puesto elegido", overflowY: "auto" }, { l: "Detalle del jugador", overflowY: "auto" }]);
   await closeAndWait(app);
 });
+
+test("import warnings take no room: a bell in the header opens them over the page", async () => {
+  const { app, page, dataDir } = await launch();
+  await loadSave(page, app, writeFakeSave(dataDir, { squad: "A" }));
+  const top = async () => (await page.locator(".cols").boundingBox())!.y;
+  const before = await top();
+  await expect(page.getByRole("button", { name: /Avisos/ })).toHaveCount(0);
+
+  await loadSave(page, app, writeFakeSave(dataDir, { squad: "A", warnings: ["2 players without a current contract.", "Otro aviso de prueba."] }, "w.fm"));
+  const bell = page.getByRole("button", { name: "Avisos (2)" });
+  await expect(bell).toBeVisible();
+  expect(await top(), "the columns did not move: no banner").toBe(before);
+  expect(await pageOverflow(page)).toEqual({ y: 0, x: 0 });
+
+  await bell.click();
+  const pop = page.getByRole("dialog", { name: "Avisos" });
+  await expect(pop).toContainText("2 players without a current contract.");
+  expect(await inside(page, '[role="dialog"][aria-label="Avisos"]'), "the popover is not clipped by the header").toBe(true);
+  await page.keyboard.press("Escape");
+  await expect(pop).toBeHidden();
+  await closeAndWait(app);
+});
