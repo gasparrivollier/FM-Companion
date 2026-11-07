@@ -174,7 +174,10 @@ export function reduce(s: PlannerState, a: Action): PlannerState {
           band = bnd === "s" ? "r" : bnd === "r" ? "o" : bnd;
         }
       }
-      return editSlots(s, r.slots, { sel, band, bandMsg: "", view: a.uid, showAll: false });
+      const next = editSlots(s, r.slots, { sel, band, bandMsg: "", view: a.uid, showAll: false });
+      const who = playerOf(s, a.uid);
+      // remember the name: if he later leaves the squad the plan can still show who he was
+      return who ? { ...next, data: { ...next.data, known: { ...next.data.known, [a.uid]: { name: who.name } } } } : next;
     }
     case "moveInBand": {
       if (s.sel === null || a.band === "t") return s;
@@ -246,7 +249,9 @@ export function reduce(s: PlannerState, a: Action): PlannerState {
       return { ...s, data: { ...s.data, views: s.data.views.filter((v) => v.id !== s.data.viewId), cols: VIEWS[0].cols.slice(), viewId: "basica" } };
     case "setSettings": {
       const next = { ...s, data: { ...s.data, settings: { ...s.data.settings, ...a.patch } } };
-      return "seasonEndOverride" in a.patch ? { ...next, base: baseSeason(next.data, s.gameDate) } : next;
+      if (!("seasonEndOverride" in a.patch)) return next;
+      const base = baseSeason(next.data, s.gameDate);
+      return { ...next, base, season: s.season >= base && s.season <= base + 2 ? s.season : base, sel: null };
     }
     case "toggleYouth":
       return { ...s, data: { ...s.data, includeYouth: !s.data.includeYouth } };

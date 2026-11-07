@@ -120,6 +120,26 @@ describe("position marks", () => {
   });
 });
 
+describe("known names and the season override", () => {
+  it("picking a player records his name so he can be shown after he leaves the squad", () => {
+    let s = makeState();
+    s = reduce(s, { type: "pick", uid: 1, slotIndex: 0 });
+    expect(s.data.known[1]).toEqual({ name: "P1" });
+  });
+  it("changing the season-end override keeps the selected season inside the new tabs", () => {
+    let s = makeState();
+    s = reduce(s, { type: "setSettings", patch: { seasonEndOverride: 2026 } });
+    expect(s.base).toBe(2026);
+    expect(s.season).toBe(2026);
+  });
+  it("keeps the selected season when it is still one of the tabs", () => {
+    let s = makeState();
+    s = reduce(s, { type: "setSeason", season: 2027 });
+    s = reduce(s, { type: "setSettings", patch: { seasonEndOverride: 2026 } });
+    expect(s.season).toBe(2027);
+  });
+});
+
 describe("views, columns, settings", () => {
   it("toggleCol never empties the list and detaches from the named view", () => {
     let s = makeState();

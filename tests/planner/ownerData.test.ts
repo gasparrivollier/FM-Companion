@@ -31,6 +31,12 @@ describe("parseOwnerData", () => {
       expect(r.message).toContain(String(OWNER_VERSION));
     }
   });
+  it("treats a missing or non-numeric version as invalid, never as v1", () => {
+    for (const v of ['{"settings":{}}', '{"version":"2"}', '{"version":null}']) {
+      const r = parseOwnerData(v);
+      expect(r.ok).toBe(false);
+    }
+  });
   it("round-trips a valid document", () => {
     const d = defaultOwnerData();
     d.plans[2026] = { tacticId: "442", slots: eleven(), dirty: false };

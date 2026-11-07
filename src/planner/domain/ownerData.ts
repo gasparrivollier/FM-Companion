@@ -69,9 +69,11 @@ export function parseOwnerData(text: string): ParseResult {
   let raw: unknown;
   try { raw = JSON.parse(text); } catch { return { ok: false, reason: "invalid", message: "El archivo de datos propios no se puede leer (JSON inválido)." }; }
   if (!isObj(raw)) return { ok: false, reason: "invalid", message: "El archivo de datos propios no tiene el formato esperado." };
-  if (num(raw.version) && raw.version > OWNER_VERSION) {
+  if (!num(raw.version)) return { ok: false, reason: "invalid", message: "El archivo de datos propios no declara su versión; no se carga para no pisarlo." };
+  if (raw.version > OWNER_VERSION) {
     return { ok: false, reason: "newer", message: `Los datos propios son de una versión más nueva de la app (versión ${raw.version}; esta app entiende hasta la ${OWNER_VERSION}).` };
   }
+  if (raw.version !== OWNER_VERSION) return { ok: false, reason: "invalid", message: `Versión ${raw.version} de los datos propios no reconocida.` };
   const d = defaultOwnerData();
   const s = isObj(raw.settings) ? raw.settings : {};
   d.settings = {

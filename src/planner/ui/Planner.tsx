@@ -35,7 +35,10 @@ export function Planner({ initial, snapshot, storage, newId = defaultId, onLoadS
     pending.current = null;
     if (text !== null) storage.write(text).then(() => setSaveError(null), (e: unknown) => setSaveError(String((e as Error)?.message ?? e)));
   };
+  const loaded = useRef(state.data);
   useEffect(() => {
+    // nothing is written until the owner changes something: opening the app must never rewrite his file
+    if (state.data === loaded.current) return;
     pending.current = JSON.stringify(state.data);
     clearTimeout(timer.current);
     timer.current = setTimeout(flush, SAVE_DELAY_MS);

@@ -56,4 +56,12 @@ describe("App loading", () => {
     fireEvent.click(screen.getByRole("button", { name: "Cerrar aviso" }));
     expect(screen.queryByText(/2 players without a current contract/)).toBeNull();
   });
+  it("does not rewrite the owner's file just by opening the app", async () => {
+    const stored = JSON.stringify({ version: 1, futureField: { keep: "me" }, plans: { "2025": { tacticId: "442", slots: [], dirty: false } } });
+    const storage = spyStorage(stored);
+    render(<App source={{ load: async () => good() }} storage={storage} />);
+    await screen.findByRole("button", { name: /2025\/26/ });
+    await new Promise((r) => setTimeout(r, 700));
+    expect(storage.write).not.toHaveBeenCalled();
+  });
 });
