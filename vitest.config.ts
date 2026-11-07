@@ -1,4 +1,4 @@
 import { defineConfig } from "vitest/config";
 export default defineConfig({
-  test: { include: ["tests/**/*.test.ts"], pool: "forks", testTimeout: 180000, hookTimeout: 180000 },
+  test: { include: ["tests/**/*.test.{ts,tsx}"], pool: "forks", testTimeout: 180000, hookTimeout: 180000 },
 });
