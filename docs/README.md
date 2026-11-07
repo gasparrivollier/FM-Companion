@@ -1,6 +1,6 @@
 # FM24 Companion: documentation
 
-State at the end of the research phase (2026-11-03). Everything here is **research and reference**. No application architecture has been decided or built.
+Research and reference for the project, written during the research phase (2026-11-03) and extended since. The design is in `superpowers/specs/`, the plans in `superpowers/plans/`. The importer is built; the planner UI is planned.
 
 ## What the project is
 
