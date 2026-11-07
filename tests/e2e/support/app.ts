@@ -7,9 +7,9 @@ import { _electron as electron, type ElectronApplication, type Locator, type Pag
 export const VIEWPORT = { width: 1440, height: 1000 };
 
 /** The page area the tests rely on, whatever the screen: a CI runner's desktop can be smaller than the window. */
-export async function fixViewport(page: Page): Promise<void> {
+export async function fixViewport(page: Page, size: { width: number; height: number } = VIEWPORT): Promise<void> {
   const cdp = await page.context().newCDPSession(page);
-  await cdp.send("Emulation.setDeviceMetricsOverride", { ...VIEWPORT, deviceScaleFactor: 1, mobile: false });
+  await cdp.send("Emulation.setDeviceMetricsOverride", { ...size, deviceScaleFactor: 1, mobile: false });
 }
 
 export interface Launched { app: ElectronApplication; page: Page; dataDir: string }
