@@ -16,7 +16,8 @@
     "electron:smoke-ui": "npm run build:ui && node scripts/build-electron.mjs && electron . --smoke-ui",
     "e2e": "playwright test --grep-invert \"@real|@installer\"",
     "e2e:real": "playwright test --grep @real",
-    "e2e:installer": "playwright test --grep @installer"
+    "e2e:installer": "playwright test --grep @installer",
+    "build:e2e": "npm run build:ui && node scripts/build-e2e.mjs"
   },
   "private": true,
   "type": "module",
