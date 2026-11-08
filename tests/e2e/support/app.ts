@@ -7,9 +7,9 @@ import { _electron as electron, type ElectronApplication, type Locator, type Pag
 export const VIEWPORT = { width: 1440, height: 1000 };
 
 /** The page area the tests rely on, whatever the screen: a CI runner's desktop can be smaller than the window. */
-export async function fixViewport(page: Page): Promise<void> {
+export async function fixViewport(page: Page, size: { width: number; height: number } = VIEWPORT): Promise<void> {
   const cdp = await page.context().newCDPSession(page);
-  await cdp.send("Emulation.setDeviceMetricsOverride", { ...VIEWPORT, deviceScaleFactor: 1, mobile: false });
+  await cdp.send("Emulation.setDeviceMetricsOverride", { ...size, deviceScaleFactor: 1, mobile: false });
 }
 
 export interface Launched { app: ElectronApplication; page: Page; dataDir: string }
@@ -58,7 +58,7 @@ export async function stubPickSave(app: ElectronApplication, path: string): Prom
   await app.evaluate(({ dialog }, p) => { dialog.showOpenDialog = (async () => ({ canceled: false, filePaths: [p] })) as typeof dialog.showOpenDialog; }, path);
 }
 
-export function writeFakeSave(dir: string, spec: { squad: "A" | "B"; hang?: boolean }, name = "save.fm"): string {
+export function writeFakeSave(dir: string, spec: { squad: "A" | "B"; hang?: boolean; warnings?: string[] }, name = "save.fm"): string {
   const p = join(dir, name);
   writeFileSync(p, JSON.stringify(spec));
   return p;

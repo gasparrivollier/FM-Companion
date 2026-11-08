@@ -72,6 +72,7 @@ describe("welcome and import", () => {
     mount(h);
     fireEvent.click(await tab());
     fireEvent.click(screen.getByRole("button", { name: "Cargar save" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Avisos (1)" }));
     expect(await screen.findByText(/2 players without a current contract/)).toBeTruthy();
     expect((await tab()).getAttribute("aria-pressed")).toBe("true"); // the season chosen before the import is still chosen
     expect(screen.getByRole("button", { name: "P9" })).toBeTruthy();

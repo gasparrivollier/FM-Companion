@@ -19,7 +19,7 @@ export function SquadTable({ state, dispatch, rowDown, justDragged, newId }: Ui 
   const total = state.players.filter((p) => !p.hidden && (state.data.includeYouth || p.squad === "first")).length;
 
   return (
-    <section className="panel" aria-label="Plantel">
+    <section className="panel grow" aria-label="Plantel">
       <div className="row2" style={{ justifyContent: "space-between" }}>
         <div className="row2"><span className="h">Plantel · {total}</span></div>
         <input className="inp" style={{ flex: "0 1 200px" }} type="search" aria-label="Buscar jugadores" placeholder="Buscar nombre o posición" value={state.q}

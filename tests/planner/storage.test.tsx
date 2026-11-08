@@ -50,11 +50,23 @@ describe("App loading", () => {
     render(<App source={{ load: async () => { throw new Error("no hay archivo"); } }} storage={spyStorage()} />);
     expect(await screen.findByText(/no hay archivo/)).toBeTruthy();
   });
-  it("shows the snapshot warnings in a dismissible banner", async () => {
+  it("keeps the snapshot warnings behind a notifications button in the header, not in a banner", async () => {
     render(<App source={{ load: async () => snapshotOf([snapPlayer(1, { GK: 20 })], "2025-04-06", ["2 players without a current contract."]) }} storage={spyStorage()} />);
-    expect(await screen.findByText(/2 players without a current contract/)).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Cerrar aviso" }));
+    const bell = await screen.findByRole("button", { name: "Avisos (1)" });
+    expect(screen.queryByText(/2 players without a current contract/)).toBeNull(); // takes no room until asked
+    fireEvent.click(bell);
+    expect(screen.getByText(/2 players without a current contract/)).toBeTruthy();
+    expect(bell.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.keyDown(screen.getByRole("dialog", { name: "Avisos" }), { key: "Escape" });
     expect(screen.queryByText(/2 players without a current contract/)).toBeNull();
+    fireEvent.click(bell);
+    fireEvent.click(bell);
+    expect(screen.queryByText(/2 players without a current contract/)).toBeNull();
+  });
+  it("has no notifications button when the snapshot has no warnings", async () => {
+    render(<App source={{ load: async () => snapshotOf([snapPlayer(1, { GK: 20 })]) }} storage={spyStorage()} />);
+    await screen.findByRole("button", { name: /2025\/26/ });
+    expect(screen.queryByRole("button", { name: /Avisos/ })).toBeNull();
   });
   it("does not rewrite the owner's file just by opening the app", async () => {
     const stored = JSON.stringify({ version: 1, futureField: { keep: "me" }, plans: { "2025": { tacticId: "442", slots: [], dirty: false } } });

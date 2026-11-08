@@ -34,7 +34,7 @@ export function SlotEditor({ state, dispatch, rowDown, justDragged, overBand }: 
   const emptySlot = slot.uid === null && !slot.role && slot.alt.length === 0;
 
   return (
-    <section className="panel" aria-label="Rol y jugador para el puesto elegido">
+    <section className="panel grow" aria-label="Rol y jugador para el puesto elegido">
       <div className="row2" style={{ justifyContent: "space-between" }}>
         <span className="h">{label} · {cands.length} disponibles</span>
         <div className="row2">
